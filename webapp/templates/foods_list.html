@@ -1,0 +1,32 @@
+<h2>{{ category.name }}</h2>
+<div>
+  {% for food in foods %}
+  {% if food.category_id == category.id %}
+  <div>
+    <form action="{{ url_for('foods.edit_food', food_id=food.id) }}" method="post">
+      <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}">
+      <input type="text" name="name" value="{{ food.name }}" required>
+      <input type="number" name="portion_grams" value="{{ food.portion_grams }}" required>
+      <input type="number" name="energy_per_100g" value="{{ food.energy_per_100g }}" required>
+      <input type="number" name="energy_per_portion" value="{{ food.energy_per_portion }}" required>
+      <input type="text" name="comment" value="{{ food.comment }}">
+      <button type="submit">Save</button>
+      <button type="submit" formaction="{{ url_for('foods.delete_food', food_id=food.id) }}"
+        formmethod="post">Delete</button>
+    </form>
+  </div>
+  {% endif %}
+  {% endfor %}
+  <div>
+    <form action="{{ url_for('foods.add_food') }}" method="post">
+      <input type="hidden" name="category_id" value="{{ category.id }}">
+      <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}">
+      <input type="text" name="name" placeholder="New food name" required>
+      <input type="number" name="portion_grams" placeholder="Portion (grams)" required>
+      <input type="number" name="energy_per_100g" placeholder="Energy per 100g" required>
+      <input type="number" name="energy_per_portion" placeholder="Energy per portion" required>
+      <input type="text" name="comment" placeholder="Comment">
+      <button type="submit">Add</button>
+    </form>
+  </div>
+</div>

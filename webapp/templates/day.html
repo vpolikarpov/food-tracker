@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ date }}{% endblock %}
+
+{% block header %}
+<h1>{{ date }}</h1>
+<nav>
+  <a href="{{ url_for('tracker.day', date=prev_date) }}">&lt; Previous</a> |
+  <a href="{{ url_for('tracker.day', date=next_date) }}">&gt; Next</a>
+</nav>
+<nav>
+  {% for day in active_days %}
+  {% if day.date == date %}
+  <strong>{{ day.date }}</strong>
+  {% else %}
+  <a href="{{ url_for('tracker.day', date=day.date) }}">{{ day.date }}</a>
+  {% endif %}
+  {% endfor %}
+  <a href="{{ url_for('tracker.date_selector', date=date) }}">+ Add day</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+{% for meal in meals %}
+<h2>{{ meal.name }}</h2>
+<div>Total Energy: {{ meal.total_energy }} kcal</div>
+<div>
+  {% for food in meal.food_items %}
+  <div>
+    <form action="{{ url_for('tracker.edit_food_consumed', food_id=food.id) }}" method="post">
+      <input type="hidden" name="meal_id" value="{{ meal.id }}">
+      <input type="text" name="name" value="{{ food.name }}" required>
+      <input type="number" name="amount_grams" value="{{ food.amount_grams }}">
+      <input type="number" name="energy_per_100g" value="{{ food.energy_per_100g }}">
+      <input type="number" name="energy_total" value="{{ food.energy_total }}">
+      <button type="submit">Save</button>
+      <button type="submit" formaction="{{ url_for('tracker.delete_food_consumed', food_id=food.id) }}"
+        formmethod="post">Delete</button>
+    </form>
+  </div>
+  {% endfor %}
+  <div>
+    <form action="{{ url_for('tracker.add_food_consumed') }}" method="post">
+      <input type="hidden" name="meal_id" value="{{ meal.id }}">
+      <input type="text" name="name" placeholder="New food name" required>
+      <input type="number" name="amount_grams" placeholder="Amount (grams)">
+      <input type="number" name="energy_per_100g" placeholder="Energy per 100g">
+      <input type="number" name="energy_total" placeholder="Total energy">
+      <button type="submit">Add</button>
+    </form>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

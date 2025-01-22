@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Select Date{% endblock %}
+
+{% block header %}
+<h1>Select Date</h1>
+{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('tracker.set_active_date') }}" method="post">
+  <label for="date">Select Date:</label>
+  <input type="date" id="date" name="date" value="{{ default_date }}">
+  <input type="submit" value="Set Active Date">
+</form>
+{% endblock %}

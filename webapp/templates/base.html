@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Food Tracker - {% block title %}{% endblock title %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+  <nav>
+    <a href="{{ url_for('foods.list') }}">Foods</a>
+    <a href="{{ url_for('tracker.day') }}">Tracker</a>
+  </nav>
+  <section>
+    <header>
+      {% block header %}{% endblock header %}
+    </header>
+    <main>
+      {% block content %}<p>No content.</p>{% endblock content %}
+    </main>
+  </section>
+</body>
+
+</html>
