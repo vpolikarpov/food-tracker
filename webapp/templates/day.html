@@ -2,53 +2,115 @@
 
 {% block title %}{{ date }}{% endblock %}
 
-{% block header %}
-<h1>{{ date }}</h1>
-<nav>
-  <a href="{{ url_for('tracker.day', date=prev_date) }}">&lt; Previous</a> |
-  <a href="{{ url_for('tracker.day', date=next_date) }}">&gt; Next</a>
-</nav>
-<nav>
-  {% for day in active_days %}
-  {% if day.date == date %}
-  <strong>{{ day.date }}</strong>
-  {% else %}
-  <a href="{{ url_for('tracker.day', date=day.date) }}">{{ day.date }}</a>
-  {% endif %}
-  {% endfor %}
-  <a href="{{ url_for('tracker.date_selector', date=date) }}">+ Add day</a>
-</nav>
-{% endblock %}
-
 {% block content %}
+<header class="container-md gy-2 mb-3" style="max-width: 800px;">
+  <div class="row g-1 align-items-center">
+    <h1 class="col-auto my-2">{{ date }}</h1>
+    <div class="col-auto d-flex m-2">
+      <a class="btn btn-outline-primary px-3 mx-1" href="{{ url_for('tracker.day', date=prev_date) }}">&lt;</a>
+      <a class="btn btn-outline-primary px-3 mx-1" href="{{ url_for('tracker.day', date=next_date) }}">&gt;</a>
+    </div>
+    <nav class="col-12">
+      <ul class="nav nav-tabs">
+        {% for day in active_days %}
+        {% set active = True if date==day.date else False %}
+        <li class="nav-item">
+          <a class="nav-link{% if active %} active" aria-current="page{% endif %}"
+            href="{{ url_for('tracker.day', date=day.date) }}">{{ day.date }}</a>
+        </li>
+        {% endfor %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">+ Add
+            day</a>
+          <div class="dropdown-menu {% if default_new_date %}show{% endif %}">
+            <form class="d-flex flex-column gy-1 p-2 align-items-stretch" action="{{ url_for('tracker.set_active_date') }}"
+              method="post">
+              <input type="date" class="form-control form-control-sm my-1" id="date" name="date" title="Select date"
+                value="{{ default_new_date }}">
+              <input type="submit" class="btn btn-sm btn-outline-primary my-1" value="Add">
+            </form>
+          </div>
+        </li>
+        </ul>
+        </nav>
+  </div>
+  </header>
+
 {% for meal in meals %}
-<h2>{{ meal.name }}</h2>
-<div>Total Energy: {{ meal.total_energy }} kcal</div>
-<div>
-  {% for food in meal.food_items %}
+<section class="container-md mb-3" style="max-width: 800px;">
+  <header>
+    <h3>{{ meal.name }}</h3>
+  </header>
   <div>
-    <form action="{{ url_for('tracker.edit_food_consumed', food_id=food.id) }}" method="post">
-      <input type="hidden" name="meal_id" value="{{ meal.id }}">
-      <input type="text" name="name" value="{{ food.name }}" required>
-      <input type="number" name="amount_grams" value="{{ food.amount_grams }}">
-      <input type="number" name="energy_per_100g" value="{{ food.energy_per_100g }}">
-      <input type="number" name="energy_total" value="{{ food.energy_total }}">
-      <button type="submit">Save</button>
-      <button type="submit" formaction="{{ url_for('tracker.delete_food_consumed', food_id=food.id) }}"
-        formmethod="post">Delete</button>
+    {% for food in meal.food_items %}
+    <form class="row g-1 mb-4 mb-sm-2" action="{{ url_for('tracker.edit_food_consumed', food_id=food.id) }}" method="post">
+      <div class="col-12 col-sm">
+        <input type="hidden" name="meal_id" value="{{ meal.id }}" />
+        <input type="text" class="form-control form-control-sm" title="Name" name="name" value="{{ food.name }}" required />
+      </div>
+      <div class="col">
+        <div class="row g-1">
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" title="Amount (grams)" name="amount_grams"
+              value="{{ food.amount_grams }}" />
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" title="Energy per 100 g" name="energy_per_100g"
+              value="{{ food.energy_per_100g }}" />
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" title="Total energy" name="energy_total"
+              value="{{ food.energy_total }}" />
+          </div>
+        </div>
+      </div>
+      <div class="col-auto" style="width: 115px">
+        <div class="d-flex justify-content-between">
+          <input type="submit" class="btn btn-sm btn-outline-primary" value="Save" />
+          <input type="submit" class="btn btn-sm btn-outline-danger"
+            formaction="{{ url_for('tracker.delete_food_consumed', food_id=food.id) }}" formmethod="post" value="Delete" />
+        </div>
+      </div>
     </form>
-  </div>
-  {% endfor %}
-  <div>
-    <form action="{{ url_for('tracker.add_food_consumed') }}" method="post">
-      <input type="hidden" name="meal_id" value="{{ meal.id }}">
-      <input type="text" name="name" placeholder="New food name" required>
-      <input type="number" name="amount_grams" placeholder="Amount (grams)">
-      <input type="number" name="energy_per_100g" placeholder="Energy per 100g">
-      <input type="number" name="energy_total" placeholder="Total energy">
-      <button type="submit">Add</button>
+    {% endfor %}
+    <form class="row g-1 mb-4 mb-sm-2" action="{{ url_for('tracker.add_food_consumed') }}" method="post">
+      <div class="col-12 col-sm">
+        <input type="hidden" name="meal_id" value="{{ meal.id }}" />
+        <input type="text" class="form-control form-control-sm" name="name" placeholder="Name" required />
+      </div>
+      <div class="col">
+        <div class="row g-1">
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="amount_grams" placeholder="g" />
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g" />
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="energy_total" placeholder="kcal" />
+          </div>
+        </div>
+      </div>
+      <div class="col-auto" style="width: 115px">
+        <div class="d-flex justify-content-between">
+          <input type="submit" class="btn btn-sm btn-outline-primary w-100" value="Add" />
+        </div>
+      </div>
     </form>
-  </div>
-</div>
+    <div class="row g-1 mb-4 mb-sm-2">
+      <div class="col-12 col-sm"></div>
+      <div class="col">
+        <div class="row g-1 align-items-baseline">
+          <div class="col-4"></div>
+          <div class="col-4 text-end">Total:</div>
+          <div class="col-4">
+            <span type="text" class="form-control form-control-sm">{{ meal.total_energy }}</span>
+          </div>
+          </div>
+      </div>
+      <div class="col-auto" style="width: 115px"></div>
+      </div>
+      </div>
+      </section>
 {% endfor %}
 {% endblock %}

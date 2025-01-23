@@ -1,32 +1,73 @@
-<h2>{{ category.name }}</h2>
-<div>
-  {% for food in foods %}
-  {% if food.category_id == category.id %}
+<section class="container-md mb-3">
+  <header>
+    <h2>{{ category.name }}</h2>
+  </header>
   <div>
-    <form action="{{ url_for('foods.edit_food', food_id=food.id) }}" method="post">
-      <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}">
-      <input type="text" name="name" value="{{ food.name }}" required>
-      <input type="number" name="portion_grams" value="{{ food.portion_grams }}" required>
-      <input type="number" name="energy_per_100g" value="{{ food.energy_per_100g }}" required>
-      <input type="number" name="energy_per_portion" value="{{ food.energy_per_portion }}" required>
-      <input type="text" name="comment" value="{{ food.comment }}">
-      <button type="submit">Save</button>
-      <button type="submit" formaction="{{ url_for('foods.delete_food', food_id=food.id) }}"
-        formmethod="post">Delete</button>
+    {% for food in foods %}
+    {% if food.category_id == category.id %}
+    <form class="row g-1 mb-4 mb-md-2" action="{{ url_for('foods.edit_food', food_id=food.id) }}" method="post">
+      <div class="col-12 col-sm-6 col-md">
+        <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
+        <input type="text" class="form-control form-control-sm" name="name" value="{{ food.name }}" required />
+      </div>
+      <div class="col col-sm-6 col-md">
+        <div class="row g-1">
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="portion_grams" value="{{ food.portion_grams }}"
+              required>
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="energy_per_100g"
+              value="{{ food.energy_per_100g }}" required>
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="energy_per_portion"
+              value="{{ food.energy_per_portion }}" required>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm">
+        <input type="text" class="form-control form-control-sm" name="comment" value="{{ food.comment }}">
+      </div>
+      <div class="col-auto" style="width: 115px">
+        <div class="d-flex justify-content-between">
+          <input type="submit" class="btn btn-sm btn-outline-primary" value="Save" />
+          <input type="submit" class="btn btn-sm btn-outline-danger"
+            formaction="{{ url_for('foods.delete_food', food_id=food.id) }}" formmethod="post" value="Delete" />
+        </div>
+      </div>
+    </form>
+    {% endif %}
+    {% endfor %}
+    <form class="row g-1 mb-4 mb-sm-2" action="{{ url_for('foods.add_food') }}" method="post">
+      <div class="col-12 col-sm-6 col-md">
+        <input type="hidden" name="category_id" value="{{ category.id }}" />
+        <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
+        <input type="text" class="form-control form-control-sm" name="name" placeholder="Name" required />
+      </div>
+      <div class="col col-sm-6 col-md">
+        <div class="row g-1">
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="portion_grams" placeholder="Portion (g)"
+              required>
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g"
+              required>
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="energy_per_portion" placeholder="kcal" required>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm">
+        <input type="text" class="form-control form-control-sm" name="comment" placeholder="Comment">
+      </div>
+      <div class="col-auto" style="width: 115px">
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-sm btn-outline-primary w-100">Add</button>
+        </div>
+      </div>
     </form>
   </div>
-  {% endif %}
-  {% endfor %}
-  <div>
-    <form action="{{ url_for('foods.add_food') }}" method="post">
-      <input type="hidden" name="category_id" value="{{ category.id }}">
-      <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}">
-      <input type="text" name="name" placeholder="New food name" required>
-      <input type="number" name="portion_grams" placeholder="Portion (grams)" required>
-      <input type="number" name="energy_per_100g" placeholder="Energy per 100g" required>
-      <input type="number" name="energy_per_portion" placeholder="Energy per portion" required>
-      <input type="text" name="comment" placeholder="Comment">
-      <button type="submit">Add</button>
-    </form>
-  </div>
-</div>
+</section>

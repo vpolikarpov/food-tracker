@@ -2,17 +2,26 @@
 
 {% block title %}Foods{% endblock %}
 
-{% block header %}
-<h1>Foods</h1>
-<nav>
-  <a href="{{ url_for('foods.list') }}">All</a>
-  {% for category in categories %}
-  <a href="{{ url_for('foods.list', category_id=category.id) }}">{{ category.name }}</a>
-  {% endfor %}
-</nav>
-{% endblock %}
-
 {% block content %}
+<header class="container-md gy-2 mb-3">
+  <h1 class="col-auto">Foods</h1>
+  <nav>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link{% if not selected_category %} active" aria-current="page{% endif %}"
+          href="{{ url_for('foods.list') }}">All</a>
+      </li>
+      {% for category in categories %}
+      {% set active = True if selected_category and selected_category == category else False %}
+      <li class="nav-item">
+        <a class="nav-link{% if active %} active" aria-current="page{% endif %}"
+          href="{{ url_for('foods.list', category_id=category.id) }}">{{ category.name }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+</header>
+
 {% if selected_category %}
 {% with category=selected_category %}
 {% include 'foods_list.html' %}

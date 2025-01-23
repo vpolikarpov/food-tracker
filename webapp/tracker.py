@@ -10,9 +10,7 @@ bp = Blueprint('tracker', __name__)
 
 @bp.route('/')
 def home():
-  day_url = url_for('tracker.day')
-  return f"Welcome to the Food Tracker App! <a href='{day_url}'>Go to Day Page</a>"
-
+  return redirect(url_for('tracker.day'))
 
 @bp.route('/day/', defaults={'date': None})
 @bp.route('/day/<date>')
@@ -29,6 +27,8 @@ def day(date):
   next_date = (parsed_date + timedelta(days=1))
 
   active_days = ActiveDay.query.order_by(ActiveDay.date).all()
+  default_new_date = parsed_date if parsed_date not in [
+    day.date for day in active_days] else None
   meals = Meal.query.filter_by(date=parsed_date).order_by(Meal.order).all()
 
   return render_template(
@@ -37,15 +37,8 @@ def day(date):
     prev_date=prev_date,
     next_date=next_date,
     active_days=active_days,
+    default_new_date=default_new_date,
     meals=meals)
-
-
-@bp.route('/date-selector')
-def date_selector():
-  default_date = request.args.get(
-    'date', datetime.today().strftime('%Y-%m-%d'))
-  return render_template('date_selector.html', default_date=default_date)
-
 
 @bp.route('/set_active_date', methods=['POST'])
 def set_active_date():
