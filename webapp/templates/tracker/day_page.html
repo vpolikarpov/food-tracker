@@ -150,9 +150,15 @@
       <div class="list-group food-category-list">
         {% for food in category.food_items %}
         <button type="button" class="list-group-item list-group-item-action" data-portion-grams="{{ food.portion_grams }}"
-          data-energy-per-100g="{{ food.energy_per_100g }}" data-energy-per-portion="{{ food.energy_per_portion }}">{{
-          food.name
-          }}</button>
+          data-energy-per-100g="{{ food.energy_per_100g }}" data-energy-per-portion="{{ food.energy_per_portion }}">
+          {{ food.name }}
+          {% if food.stock_amount %}
+          <span class="badge mx-1 bg-info text-dark">{{ food.stock_amount }}</span>
+          {% endif %}
+          {% if food.due_date %}
+          <span class="badge mx-1 bg-warning text-dark">{{ food.due_date }}</span>
+          {% endif %}
+        </button>
         {% endfor %}
       </div>
     </div>

@@ -23,6 +23,8 @@ class FoodItem(db.Model):
   energy_per_100g = db.Column(db.Integer, nullable=False)
   energy_per_portion = db.Column(db.Integer, nullable=False)
   comment = db.Column(db.String(200))
+  stock_amount = db.Column(db.String(20))
+  due_date = db.Column(db.String(30))
 
   def __repr__(self):
     return f'<FoodEntry {self.name}>'

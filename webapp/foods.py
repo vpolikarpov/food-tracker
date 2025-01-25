@@ -35,6 +35,8 @@ def edit_food(food_id):
   food.portion_grams = request.form['portion_grams']
   food.energy_per_100g = request.form['energy_per_100g']
   food.energy_per_portion = request.form['energy_per_portion']
+  food.stock_amount = request.form['stock_amount']
+  food.due_date = request.form['due_date']
   food.comment = request.form['comment']
   db.session.commit()
 
@@ -51,6 +53,8 @@ def add_food():
     portion_grams=request.form['portion_grams'],
     energy_per_100g=request.form['energy_per_100g'],
     energy_per_portion=request.form['energy_per_portion'],
+    stock_amount=request.form['stock_amount'],
+    due_date=request.form['due_date'],
     comment=request.form['comment'],
     category_id=category_id
   )

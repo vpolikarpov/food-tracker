@@ -5,8 +5,8 @@ $(document).ready(function () {
     performCalculations($(this));
   });
 
-  // Add highlighting for name and comment inputs
-  $('input[name="name"], input[name="comment"]').on('input', function () {
+  // Add highlighting for name, comment, stock, and date inputs
+  $('input[name="name"], input[name="comment"], input[name="stock_amount"], input[name="due_date"]').on('input', function () {
     $(this).addClass('bg-warning');
     $(this).closest('form').find('input.btn-outline-primary').removeClass('btn-outline-primary').addClass('btn-primary');
   });
