@@ -38,8 +38,13 @@ def day(date):
     # Otherwise, set the default new date to the day after the last active day
     default_new_date = active_days[-1].date + timedelta(days=1)
 
-  meals = Meal.query.filter_by(date=parsed_date).order_by(Meal.order).all()
-  food_categories = FoodCategory.query.order_by(FoodCategory.name).all()
+  # Display meals only if the selected date is an active day
+  if parsed_date in [day.date for day in active_days]:
+    meals = Meal.query.filter_by(date=parsed_date).order_by(Meal.order).all()
+    food_categories = FoodCategory.query.order_by(FoodCategory.name).all()
+  else:
+    meals = []
+    food_categories = []
 
   return render_template(
     'tracker/day_page.html',
@@ -71,6 +76,15 @@ def set_active_date():
     db.session.commit()
 
   return redirect(url_for('tracker.day', date=parsed_date.strftime('%Y-%m-%d')))
+
+
+@bp.route('/remove_active_date/<date>', methods=['POST'])
+def remove_active_date(date):
+  parsed_date = datetime.strptime(date, '%Y-%m-%d').date()
+  active_day = ActiveDay.query.get_or_404(parsed_date)
+  db.session.delete(active_day)
+  db.session.commit()
+  return redirect(url_for('tracker.day'))
 
 
 @bp.route('/add_food_consumed', methods=['POST'])
