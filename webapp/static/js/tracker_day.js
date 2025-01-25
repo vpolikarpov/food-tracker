@@ -32,7 +32,9 @@ $(document).ready(function () {
   // When user changes values manually, highlight the inputs and change the save button
   $('input[name="amount_grams"], input[name="energy_per_100g"], input[name="energy_total"]').on('input', function () {
     $(this).addClass('bg-warning');
-    $(this).closest('form').find('input.btn-outline-primary').removeClass('btn-outline-primary').addClass('btn-primary');
+    var form = $(this).closest('form');
+    form.find('.save-button, .reset-button').show();
+    form.find('.delete-button').hide();
     performCalculations($(this));
   });
   var lastChangedInput = null;
@@ -41,7 +43,8 @@ $(document).ready(function () {
   $('.reset-button').on('click', function () {
     var form = $(this).closest('form');
     form.find('input').removeClass('bg-warning');
-    form.find('input.btn-primary').removeClass('btn-primary').addClass('btn-outline-primary');
+    form.find('.save-button, .reset-button').hide();
+    form.find('.delete-button').show();
   });
 
   function filterFoodList() {
@@ -80,6 +83,8 @@ $(document).ready(function () {
     }
 
     originForm.find('input.btn-outline-primary').removeClass('btn-outline-primary').addClass('btn-primary');
+    originForm.find('.save-button, .reset-button').show();
+    originForm.find('.delete-button').hide();
     $('#foodSelector').offcanvas('hide');
   }
 

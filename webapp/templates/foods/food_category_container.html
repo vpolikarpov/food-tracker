@@ -17,17 +17,15 @@
         <div class="row g-1">
           <div class="col-4">
             <input type="number" class="form-control form-control-sm" name="portion_grams" placeholder="Portion (g)"
-              value="{{ food.portion_grams }}"
-              required min="0">
+              value="{{ food.portion_grams }}" min="0" />
           </div>
           <div class="col-4">
             <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g"
-              value="{{ food.energy_per_100g }}"
-              required min="0">
+              value="{{ food.energy_per_100g }}" min="0" />
           </div>
           <div class="col-4">
             <input type="number" class="form-control form-control-sm" name="energy_per_portion" placeholder="kcal"
-              value="{{ food.energy_per_portion }}" required min="0">
+              value="{{ food.energy_per_portion }}" min="0" />
           </div>
         </div>
       </div>
@@ -44,10 +42,13 @@
           autocomplete="off">
       </div>
       <div class="col-auto" style="width: 115px">
-        <div class="d-flex justify-content-between">
-          <input type="submit" class="btn btn-sm btn-outline-primary" value="Save" />
-          <input type="submit" class="btn btn-sm btn-outline-danger"
-            formaction="{{ url_for('foods.delete_food', food_id=food.id) }}" formmethod="post" value="Delete" />
+        <div class="d-flex gap-1">
+          <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" title="Save"
+            style="display: none;" />
+          <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset"
+            style="display: none;" />
+          <input type="submit" class="btn btn-sm btn-outline-danger flex-grow-1 delete-button"
+            formaction="{{ url_for('foods.delete_food', food_id=food.id) }}" formmethod="post" value="Delete" title="Delete" />
         </div>
       </div>
     </form>
@@ -87,9 +88,11 @@
           autocomplete="off" />
       </div>
       <div class="col-auto" style="width: 115px">
-        <div class="d-flex justify-content-between">
-          <input type="submit" class="btn btn-sm btn-outline-primary w-100" title="Add" value="Add" />
-          <input type="reset" class="btn btn-sm btn-outline-secondary w-100 ms-1 reset-button" value="Reset" />
+        <div class="d-flex gap-1">
+          <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" title="Save"
+            style="display: none;" />
+          <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset"
+            style="display: none;" />
         </div>
       </div>
     </form>
