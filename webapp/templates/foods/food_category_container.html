@@ -9,21 +9,24 @@
       method="post">
       <div class="col-12 col-sm-6 col-md-3 col-lg">
         <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
-        <input type="text" class="form-control form-control-sm" name="name" value="{{ food.name }}" autocomplete="off"
+        <input type="text" class="form-control form-control-sm" name="name" placeholder="Name" value="{{ food.name }}"
+          autocomplete="off"
           required />
       </div>
       <div class="col col-sm-6 col-md-6 col-lg">
         <div class="row g-1">
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="portion_grams" value="{{ food.portion_grams }}"
+            <input type="number" class="form-control form-control-sm" name="portion_grams" placeholder="Portion (g)"
+              value="{{ food.portion_grams }}"
               required min="0">
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g" value="{{ food.energy_per_100g }}"
+            <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g"
+              value="{{ food.energy_per_100g }}"
               required min="0">
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_portion"
+            <input type="number" class="form-control form-control-sm" name="energy_per_portion" placeholder="kcal"
               value="{{ food.energy_per_portion }}" required min="0">
           </div>
         </div>
@@ -37,7 +40,8 @@
         </div>
       </div>
       <div class="col-12 col-sm-6 col-md">
-        <input type="text" class="form-control form-control-sm" name="comment" value="{{ food.comment }}" autocomplete="off">
+        <input type="text" class="form-control form-control-sm" name="comment" placeholder="Comment" value="{{ food.comment }}"
+          autocomplete="off">
       </div>
       <div class="col-auto" style="width: 115px">
         <div class="d-flex justify-content-between">
