@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import uuid
 
 from webapp.database import db
-from webapp.models import ActiveDay, Meal, MealType, FoodItemConsumed
+from webapp.models import ActiveDay, Meal, MealType, FoodItemConsumed, FoodCategory, FoodItem
 
 bp = Blueprint('tracker', __name__)
 
@@ -30,15 +30,17 @@ def day(date):
   default_new_date = parsed_date if parsed_date not in [
     day.date for day in active_days] else None
   meals = Meal.query.filter_by(date=parsed_date).order_by(Meal.order).all()
+  food_categories = FoodCategory.query.order_by(FoodCategory.name).all()
 
   return render_template(
-    'day.html',
+    'tracker/day_page.html',
     date=parsed_date,
     prev_date=prev_date,
     next_date=next_date,
     active_days=active_days,
     default_new_date=default_new_date,
-    meals=meals)
+    meals=meals,
+    food_categories=food_categories)
 
 @bp.route('/set_active_date', methods=['POST'])
 def set_active_date():

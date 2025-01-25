@@ -8,26 +8,27 @@
     <form class="row g-1 mb-4 mb-md-2" action="{{ url_for('foods.edit_food', food_id=food.id) }}" method="post">
       <div class="col-12 col-sm-6 col-md">
         <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
-        <input type="text" class="form-control form-control-sm" name="name" value="{{ food.name }}" required />
+        <input type="text" class="form-control form-control-sm" name="name" value="{{ food.name }}" autocomplete="off"
+          required />
       </div>
       <div class="col col-sm-6 col-md">
         <div class="row g-1">
           <div class="col-4">
             <input type="number" class="form-control form-control-sm" name="portion_grams" value="{{ food.portion_grams }}"
-              required>
+              required min="0">
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g"
-              value="{{ food.energy_per_100g }}" required>
+            <input type="number" class="form-control form-control-sm" name="energy_per_100g" value="{{ food.energy_per_100g }}"
+              required min="0">
           </div>
           <div class="col-4">
             <input type="number" class="form-control form-control-sm" name="energy_per_portion"
-              value="{{ food.energy_per_portion }}" required>
+              value="{{ food.energy_per_portion }}" required min="0">
           </div>
         </div>
       </div>
       <div class="col-12 col-sm">
-        <input type="text" class="form-control form-control-sm" name="comment" value="{{ food.comment }}">
+        <input type="text" class="form-control form-control-sm" name="comment" value="{{ food.comment }}" autocomplete="off">
       </div>
       <div class="col-auto" style="width: 115px">
         <div class="d-flex justify-content-between">
@@ -43,29 +44,33 @@
       <div class="col-12 col-sm-6 col-md">
         <input type="hidden" name="category_id" value="{{ category.id }}" />
         <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
-        <input type="text" class="form-control form-control-sm" name="name" placeholder="Name" required />
+        <input type="text" class="form-control form-control-sm" name="name" placeholder="Name" value="" autocomplete="off"
+          required />
       </div>
       <div class="col col-sm-6 col-md">
         <div class="row g-1">
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="portion_grams" placeholder="Portion (g)"
-              required>
+            <input type="number" class="form-control form-control-sm" name="portion_grams" placeholder="Portion (g)" value=""
+              min="0" />
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g"
-              required>
+            <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g" value=""
+              min="0" />
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_portion" placeholder="kcal" required>
+            <input type="number" class="form-control form-control-sm" name="energy_per_portion" placeholder="kcal" value=""
+              min="0" />
           </div>
         </div>
       </div>
       <div class="col-12 col-sm">
-        <input type="text" class="form-control form-control-sm" name="comment" placeholder="Comment">
+        <input type="text" class="form-control form-control-sm" name="comment" placeholder="Comment" value=""
+          autocomplete="off" />
       </div>
       <div class="col-auto" style="width: 115px">
         <div class="d-flex justify-content-between">
-          <button type="submit" class="btn btn-sm btn-outline-primary w-100">Add</button>
+          <input type="submit" class="btn btn-sm btn-outline-primary w-100" title="Add" value="Add" />
+          <input type="reset" class="btn btn-sm btn-outline-secondary w-100 ms-1 reset-button" value="Reset" />
         </div>
       </div>
     </form>

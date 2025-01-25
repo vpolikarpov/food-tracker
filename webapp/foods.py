@@ -18,7 +18,7 @@ def list(category_id=None):
     foods = FoodItem.query.order_by(FoodItem.name).all()
     selected_category = None
 
-  return render_template('foods.html', categories=categories, foods=foods, selected_category=selected_category)
+  return render_template('foods/foods_page.html', categories=categories, foods=foods, selected_category=selected_category)
 
 
 def redirect_based_on_origin(origin, category_id):
