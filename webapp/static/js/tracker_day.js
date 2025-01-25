@@ -21,7 +21,7 @@ $(document).ready(function () {
 
   // When the user clicks on a food name in the food list, set the selected food name
   $('.food-category-list .list-group-item').on('click', function () {
-    setSelectedFoodName($(this).text());
+    setSelectedFoodName($(this).data('food-name'));
   });
 
   // Filter the food list when the user types in the food name input
@@ -47,7 +47,7 @@ $(document).ready(function () {
   function filterFoodList() {
     var filter = $('#foodName').val().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     $('.food-category-list .list-group-item').each(function () {
-      var foodName = $(this).text().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      var foodName = $(this).data('food-name').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       $(this).toggle(foodName.includes(filter));
     });
 
@@ -70,7 +70,7 @@ $(document).ready(function () {
     originForm.find('.food-name-input').val(selectedFoodName).addClass('bg-warning');
 
     var selectedFoodButton = $('.food-category-list .list-group-item').filter(function () {
-      return $(this).text() === selectedFoodName;
+      return $(this).data('food-name') === selectedFoodName;
     });
 
     if (selectedFoodButton.length) {
