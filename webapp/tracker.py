@@ -15,28 +15,35 @@ def home():
 @bp.route('/day/', defaults={'date': None})
 @bp.route('/day/<date>')
 def day(date):
+  today = datetime.today().date()
+
   if date:
     try:
       parsed_date = datetime.strptime(date, '%Y-%m-%d').date()
     except ValueError:
       return "Invalid date format. Please use '%Y-%m-%d'."
   else:
-    parsed_date = datetime.today().date()
-
-  prev_date = (parsed_date - timedelta(days=1))
-  next_date = (parsed_date + timedelta(days=1))
+    parsed_date = today
 
   active_days = ActiveDay.query.order_by(ActiveDay.date).all()
-  default_new_date = parsed_date if parsed_date not in [
-    day.date for day in active_days] else None
+
+  default_new_date = None
+  if today not in [day.date for day in active_days]:
+    # If today is not an active day, set it as the default new date
+    default_new_date = today
+  elif parsed_date not in [day.date for day in active_days]:
+    # If the selected date is not an active day, set it as the default new date
+    default_new_date = parsed_date
+  else:
+    # Otherwise, set the default new date to the day after the last active day
+    default_new_date = active_days[-1].date + timedelta(days=1)
+
   meals = Meal.query.filter_by(date=parsed_date).order_by(Meal.order).all()
   food_categories = FoodCategory.query.order_by(FoodCategory.name).all()
 
   return render_template(
     'tracker/day_page.html',
     date=parsed_date,
-    prev_date=prev_date,
-    next_date=next_date,
     active_days=active_days,
     default_new_date=default_new_date,
     meals=meals,

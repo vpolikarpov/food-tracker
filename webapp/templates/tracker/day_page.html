@@ -9,160 +9,32 @@
 {% block content %}
 <header class="container-md gy-2 mb-3" style="max-width: 800px;">
   <div class="row g-1 align-items-center">
-    <h1 class="col-auto my-2">{{ date }}</h1>
-    <div class="col-auto d-flex m-2">
-      <a class="btn btn-outline-primary px-3 mx-1" href="{{ url_for('tracker.day', date=prev_date) }}">&lt;</a>
-      <a class="btn btn-outline-primary px-3 mx-1" href="{{ url_for('tracker.day', date=next_date) }}">&gt;</a>
-    </div>
+    <h1 class="col-auto my-2">Tracker</h1>
     <nav class="col-12">
       <ul class="nav nav-tabs">
         {% for day in active_days %}
-        {% set active = True if date==day.date else False %}
         <li class="nav-item">
-          <a class="nav-link{% if active %} active" aria-current="page{% endif %}"
+          <a class="nav-link{% if date==day.date %} active" aria-current="page{% endif %}"
             href="{{ url_for('tracker.day', date=day.date) }}">{{ day.date }}</a>
         </li>
         {% endfor %}
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">+
-            Add
-            day</a>
-          <div class="dropdown-menu {% if default_new_date %}show{% endif %}">
-            <form class="d-flex flex-column gy-1 p-2 align-items-stretch"
-              action="{{ url_for('tracker.set_active_date') }}" method="post">
-              <input type="date" class="form-control form-control-sm my-1" id="date" name="date" title="Select date"
-                value="{{ default_new_date }}">
-              <input type="submit" class="btn btn-sm btn-outline-primary my-1" value="Add">
-            </form>
-          </div>
+        <li class="nav-item">
+          <a class="nav-link{% if date==default_new_date %} active" aria-current="page{% endif %}"
+            href="{{ url_for('tracker.day', date=default_new_date) }}">+ Add day</a>
         </li>
       </ul>
     </nav>
   </div>
 </header>
 
+{% if not meals %}
+{% include 'tracker/day_add_container.html' %}
+{% else %}
 {% for meal in meals %}
-<section class="container-md mb-3" style="max-width: 800px;">
-  <header>
-    <h3>{{ meal.name }}</h3>
-  </header>
-  <div>
-    {% for food in meal.food_items %}
-    <form class="row g-1 mb-4 mb-sm-2" action="{{ url_for('tracker.edit_food_consumed', food_id=food.id) }}"
-      method="post" data-form-id="{{ food.id }}">
-      <div class="col-12 col-sm">
-        <input type="hidden" name="meal_id" value="{{ meal.id }}" />
-        <input type="text" class="form-control form-control-sm food-name-input" title="Name" name="name"
-          value="{{ food.name }}" readonly data-bs-toggle="offcanvas" data-bs-target="#foodSelector" autocomplete="off" />
-      </div>
-      <div class="col">
-        <div class="row g-1">
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" title="Amount (grams)" name="amount_grams"
-              value="{{ food.amount_grams }}" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" title="Energy per 100 g" name="energy_per_100g"
-              value="{{ food.energy_per_100g }}" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" title="Total energy" name="energy_total"
-              value="{{ food.energy_total }}" min="0" />
-          </div>
-        </div>
-      </div>
-      <div class="col-auto" style="width: 115px">
-        <div class="d-flex justify-content-between">
-          <input type="submit" class="btn btn-sm btn-outline-primary" value="Save" />
-          <input type="submit" class="btn btn-sm btn-outline-danger"
-            formaction="{{ url_for('tracker.delete_food_consumed', food_id=food.id) }}" formmethod="post"
-            value="Delete" />
-        </div>
-      </div>
-    </form>
-    {% endfor %}
-    <form class="row g-1 mb-4 mb-sm-2" action="{{ url_for('tracker.add_food_consumed') }}" method="post"
-      data-form-id="new-{{ meal.id }}">
-      <div class="col-12 col-sm">
-        <input type="hidden" name="meal_id" value="{{ meal.id }}" />
-        <input type="text" class="form-control form-control-sm food-name-input" name="name" placeholder="Name" readonly
-          data-bs-toggle="offcanvas" data-bs-target="#foodSelector" value="" autocomplete="off" />
-      </div>
-      <div class="col">
-        <div class="row g-1">
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="amount_grams" placeholder="g" value="" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g" value=""
-              min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_total" placeholder="kcal" value="" min="0" />
-          </div>
-        </div>
-      </div>
-      <div class="col-auto" style="width: 115px">
-        <div class="d-flex justify-content-between">
-          <input type="submit" class="btn btn-sm btn-outline-primary w-100" value="Add" />
-          <input type="reset" class="btn btn-sm btn-outline-secondary w-100 ms-1 reset-button" value="Reset" />
-        </div>
-      </div>
-    </form>
-    <div class="row g-1 mb-4 mb-sm-2">
-      <div class="col-12 col-sm"></div>
-      <div class="col">
-        <div class="row g-1 align-items-baseline">
-          <div class="col-4"></div>
-          <div class="col-4 text-end">Total:</div>
-          <div class="col-4">
-            <span type="text" class="form-control form-control-sm">{{ meal.total_energy }}</span>
-          </div>
-        </div>
-      </div>
-      <div class="col-auto" style="width: 115px"></div>
-    </div>
-  </div>
-</section>
+{% include 'tracker/day_meal_container.html' %}
 {% endfor %}
+{% endif %}
 
-<!-- Offcanvas for food selection -->
-<div class="offcanvas offcanvas-start" tabindex="-1" id="foodSelector" aria-labelledby="foodSelectorLabel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="foodSelectorLabel">Select Food</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-    <form id="foodSelectorForm" class="mb-3">
-      <input type="hidden" id="originFormId" />
-      <div class="mb-3">
-        <label for="foodName" class="form-label">Food Name</label>
-        <input type="text" class="form-control" id="foodName" autocomplete="off" />
-      </div>
-      <div class="d-flex justify-content-between">
-        <button type="submit" class="btn btn-primary" id="selectFoodButton">Save</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas" id="cancelFoodButton">Cancel</button>
-      </div>
-    </form>
-    {% for category in food_categories %}
-    <div class="food-category-container">
-      <h6 class="mt-3">{{ category.name }}</h6>
-      <div class="list-group food-category-list">
-        {% for food in category.food_items %}
-        <button type="button" class="list-group-item list-group-item-action" data-portion-grams="{{ food.portion_grams }}"
-          data-energy-per-100g="{{ food.energy_per_100g }}" data-energy-per-portion="{{ food.energy_per_portion }}">
-          {{ food.name }}
-          {% if food.stock_amount %}
-          <span class="badge mx-1 bg-info text-dark">{{ food.stock_amount }}</span>
-          {% endif %}
-          {% if food.due_date %}
-          <span class="badge mx-1 bg-warning text-dark">{{ food.due_date }}</span>
-          {% endif %}
-        </button>
-        {% endfor %}
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-</div>
+{% include 'tracker/day_foods_offcanvas.html' %}
+
 {% endblock %}

@@ -1,0 +1,6 @@
+<section class="container-md mb-3" style="max-width: 300px;">
+  <form class="d-flex gap-2 align-items-stretch" action="{{ url_for('tracker.set_active_date') }}" method="post">
+    <input type="date" class="form-control" id="date" name="date" title="Select date" value="{{ default_new_date }}">
+    <input type="submit" class="btn btn-primary" value="Add">
+  </form>
+</section>

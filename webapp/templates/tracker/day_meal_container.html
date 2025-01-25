@@ -1,0 +1,85 @@
+<section class="container-md mb-3" style="max-width: 800px;">
+  <header>
+    <h3>{{ meal.name }}</h3>
+  </header>
+  <div>
+    {% for food in meal.food_items %}
+    <form class="row g-1 mb-4 mb-sm-2" action="{{ url_for('tracker.edit_food_consumed', food_id=food.id) }}"
+      method="post" data-form-id="{{ food.id }}">
+      <div class="col-12 col-sm">
+        <input type="hidden" name="meal_id" value="{{ meal.id }}" />
+        <input type="text" class="form-control form-control-sm food-name-input" title="Name" name="name"
+          value="{{ food.name }}" readonly data-bs-toggle="offcanvas" data-bs-target="#foodSelector"
+          autocomplete="off" />
+      </div>
+      <div class="col">
+        <div class="row g-1">
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" title="Amount (grams)" name="amount_grams"
+              value="{{ food.amount_grams }}" min="0" />
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" title="Energy per 100 g" name="energy_per_100g"
+              value="{{ food.energy_per_100g }}" min="0" />
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" title="Total energy" name="energy_total"
+              value="{{ food.energy_total }}" min="0" />
+          </div>
+        </div>
+      </div>
+      <div class="col-auto" style="width: 115px">
+        <div class="d-flex justify-content-between">
+          <input type="submit" class="btn btn-sm btn-outline-primary" value="Save" />
+          <input type="submit" class="btn btn-sm btn-outline-danger"
+            formaction="{{ url_for('tracker.delete_food_consumed', food_id=food.id) }}" formmethod="post"
+            value="Delete" />
+        </div>
+      </div>
+    </form>
+    {% endfor %}
+    <form class="row g-1 mb-4 mb-sm-2" action="{{ url_for('tracker.add_food_consumed') }}" method="post"
+      data-form-id="new-{{ meal.id }}">
+      <div class="col-12 col-sm">
+        <input type="hidden" name="meal_id" value="{{ meal.id }}" />
+        <input type="text" class="form-control form-control-sm food-name-input" name="name" placeholder="Name" readonly
+          data-bs-toggle="offcanvas" data-bs-target="#foodSelector" value="" autocomplete="off" />
+      </div>
+      <div class="col">
+        <div class="row g-1">
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="amount_grams" placeholder="g" value=""
+              min="0" />
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g"
+              value="" min="0" />
+          </div>
+          <div class="col-4">
+            <input type="number" class="form-control form-control-sm" name="energy_total" placeholder="kcal" value=""
+              min="0" />
+          </div>
+        </div>
+      </div>
+      <div class="col-auto" style="width: 115px">
+        <div class="d-flex justify-content-between">
+          <input type="submit" class="btn btn-sm btn-outline-primary w-100" value="Add" />
+          <input type="reset" class="btn btn-sm btn-outline-secondary w-100 ms-1 reset-button" value="Reset" />
+        </div>
+      </div>
+    </form>
+    <div class="row g-1 mb-4 mb-sm-2">
+      <div class="col-12 col-sm"></div>
+      <div class="col">
+        <div class="row g-1 align-items-baseline">
+          <div class="col-4"></div>
+          <div class="col-4 text-end">Total:</div>
+          <div class="col-4">
+            <span type="text" class="form-control form-control-sm">{{ meal.total_energy }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-auto" style="width: 115px"></div>
+    </div>
+  </div>
+</section>
