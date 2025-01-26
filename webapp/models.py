@@ -8,6 +8,7 @@ import uuid
 class FoodCategory(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(100), nullable=False)
+  order = db.Column(db.Integer, nullable=False, unique=True)
   food_items = db.relationship('FoodItem', backref='category', lazy=True)
 
   def __repr__(self):

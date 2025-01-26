@@ -9,7 +9,7 @@ bp = Blueprint('foods', __name__)
 @bp.route('/foods/')
 @bp.route('/foods/<int:category_id>')
 def list(category_id=None):
-  categories = FoodCategory.query.order_by(FoodCategory.name).all()
+  categories = FoodCategory.query.order_by(FoodCategory.order).all()
   if category_id:
     foods = FoodItem.query.filter_by(
       category_id=category_id).order_by(FoodItem.name).all()

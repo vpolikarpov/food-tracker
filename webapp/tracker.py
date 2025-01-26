@@ -41,7 +41,7 @@ def day(date):
   # Display meals only if the selected date is an active day
   if parsed_date in [day.date for day in active_days]:
     meals = Meal.query.filter_by(date=parsed_date).order_by(Meal.order).all()
-    food_categories = FoodCategory.query.order_by(FoodCategory.name).all()
+    food_categories = FoodCategory.query.order_by(FoodCategory.order).all()
   else:
     meals = []
     food_categories = []
