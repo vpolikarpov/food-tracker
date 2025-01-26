@@ -1,8 +1,9 @@
-from flask import current_app, g
-
 from webapp.database import db
+from sqlalchemy.event import listens_for
 
 import uuid
+import os
+import csv
 
 
 class FoodCategory(db.Model):
@@ -75,3 +76,25 @@ class ActiveDay(db.Model):
 
   def __repr__(self):
     return f'<ActiveDay {self.date}>'
+
+
+@listens_for(FoodCategory.__table__, 'after_create')
+def insert_initial_values(*args, **kwargs):
+  load_csv_data(FoodCategory, 'data/food_categories.csv')
+
+
+@listens_for(MealTemplate.__table__, 'after_create')
+def insert_initial_values(*args, **kwargs):
+  load_csv_data(MealTemplate, 'data/meal_templates.csv')
+
+
+def load_csv_data(model, file_path):
+  if os.path.exists(file_path):
+    with open(file_path, mode='r') as file:
+      reader = csv.DictReader(file)
+      for row in reader:
+        db.session.add(model(**row))
+    db.session.commit()
+  else:
+    print(f"File {file_path} not found. Skipping initial data load for {
+          model.__name__}.")
