@@ -43,12 +43,13 @@ class FoodItemConsumed(db.Model):
     return f'<FoodItemConsumed {self.date} - {self.food_item_id}>'
 
 
-class MealType(db.Model):
+class MealTemplate(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(100), nullable=False)
-  order = db.Column(db.Integer, primary_key=True)
+  order = db.Column(db.Integer, nullable=False, unique=True)
 
   def __repr__(self):
-    return f'<MealType {self.name}>'
+    return f'<MealTemplate {self.name}>'
 
 
 class Meal(db.Model):

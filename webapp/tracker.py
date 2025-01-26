@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import uuid
 
 from webapp.database import db
-from webapp.models import ActiveDay, Meal, MealType, FoodItemConsumed, FoodCategory, FoodItem
+from webapp.models import ActiveDay, Meal, MealTemplate, FoodItemConsumed, FoodCategory, FoodItem
 
 bp = Blueprint('tracker', __name__)
 
@@ -66,11 +66,11 @@ def set_active_date():
     # Check if there are any meals for the selected date
     existing_meals = Meal.query.filter_by(date=parsed_date).all()
     if not existing_meals:
-      # Get all meal types and create meals for the selected date
-      meal_types = MealType.query.order_by(MealType.order).all()
-      for meal_type in meal_types:
+      # Get all meal templates and create meals for the selected date
+      meal_templates = MealTemplate.query.order_by(MealTemplate.order).all()
+      for meal_template in meal_templates:
         new_meal = Meal(date=parsed_date,
-                        order=meal_type.order, name=meal_type.name)
+                        order=meal_template.order, name=meal_template.name)
         db.session.add(new_meal)
 
     db.session.commit()
