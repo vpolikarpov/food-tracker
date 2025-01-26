@@ -45,6 +45,11 @@ $(document).ready(function () {
     form.find('input').removeClass('bg-warning');
     form.find('.save-button, .reset-button').hide();
     form.find('.delete-button').show();
+
+    // We need to reset the form explicitly
+    // for the total meal intake to be updated correctly
+    form[0].reset();
+    updateTotalMealIntake(form.closest('.meal-container'));
   });
 
   function filterFoodList() {
@@ -86,6 +91,8 @@ $(document).ready(function () {
     originForm.find('.save-button, .reset-button').show();
     originForm.find('.delete-button').hide();
     $('#foodSelector').offcanvas('hide');
+
+    updateTotalMealIntake(originForm.closest('.meal-container'));
   }
 
   function performCalculations(changedInput) {
@@ -100,6 +107,7 @@ $(document).ready(function () {
 
     // If the changed input is empty, do nothing
     if (changedInput.val() === '') {
+      updateTotalMealIntake(form.closest('.meal-container'));
       return;
     }
 
@@ -149,12 +157,15 @@ $(document).ready(function () {
       }
       targetInput.addClass('bg-warning');
     }
+
+    updateTotalMealIntake(form.closest('.meal-container'));
   }
 
-  function resetForm(button) {
-    var form = $(button).closest('form');
-    form[0].reset();
-    form.find('input').removeClass('bg-warning');
-    form.find('input.btn-primary').removeClass('btn-primary').addClass('btn-outline-primary');
+  function updateTotalMealIntake(mealContainer) {
+    var mealTotalEnergy = 0;
+    mealContainer.find('input[name="energy_total"]').each(function () {
+      mealTotalEnergy += parseInt($(this).val()) || 0;
+    });
+    mealContainer.find('.meal-total-energy').text(mealTotalEnergy + ' kcal');
   }
 });
