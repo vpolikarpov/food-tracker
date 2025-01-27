@@ -27,6 +27,7 @@
   </div>
 </header>
 
+<section class="container-fluid overflow-x-auto p-0" style="max-width: 800px;">
 {% if not meals %}
 {% include 'tracker/day_add_container.html' %}
 {% else %}
@@ -39,6 +40,7 @@
   </form>
 </div>
 {% endif %}
+</section>
 
 {% include 'tracker/day_foods_offcanvas.html' %}
 

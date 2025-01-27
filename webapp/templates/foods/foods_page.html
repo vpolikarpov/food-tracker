@@ -26,6 +26,7 @@
   </nav>
 </header>
 
+<section class="container-fluid overflow-x-auto p-0">
 {% if selected_category %}
 {% with category=selected_category %}
 {% include 'foods/food_category_container.html' %}
@@ -35,4 +36,5 @@
 {% include 'foods/food_category_container.html' %}
 {% endfor %}
 {% endif %}
+</section>
 {% endblock %}

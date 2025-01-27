@@ -1,31 +1,40 @@
-<section class="container-md mb-3 meal-container" style="max-width: 800px;">
+<section class="container-fluid mx-auto mb-3 meal-container" style="min-width: 600px;">
   <header>
     <h3>{{ meal.name }}</h3>
   </header>
   <div>
+    <div class="row g-1 mb-1 small opacity-50 text-nowrap">
+      <div class="col"><span class="px-2">Name</span></div>
+      <div class="col">
+        <div class="row g-1 align-items-baseline">
+          <div class="col-4"><span class="px-2">Serving, g</span></div>
+          <div class="col-4"><span class="px-2">kcal/100g</span></div>
+          <div class="col-4"><span class="px-2">Energy, kcal</span></div>
+        </div>
+      </div>
+      <div class="col-auto" style="width: 115px"></div>
+    </div>
     {% for food in meal.food_items %}
-    <form class="row g-1 mb-4 mb-sm-2 justify-content-end"
-      action="{{ url_for('tracker.edit_food_consumed', food_id=food.id) }}"
+    <form class="row g-1 mb-2 justify-content-end" action="{{ url_for('tracker.edit_food_consumed', food_id=food.id) }}"
       method="post" data-form-id="{{ food.id }}">
-      <div class="col-12 col-sm">
+      <div class="col">
         <input type="hidden" name="meal_id" value="{{ meal.id }}" />
         <input type="text" class="form-control form-control-sm food-name-input" title="Name" name="name"
           value="{{ food.name }}" readonly data-bs-toggle="offcanvas" data-bs-target="#foodSelector"
           autocomplete="off" />
       </div>
-      <div class="col-12 col-sm">
+      <div class="col">
         <div class="row g-1">
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" title="Amount (grams)" name="amount_grams" placeholder="g"
+            <input type="number" class="form-control form-control-sm" title="Amount (grams)" name="amount_grams"
               value="{{ food.amount_grams }}" min="0" />
           </div>
           <div class="col-4">
             <input type="number" class="form-control form-control-sm" name="energy_per_100g" title="Energy per 100 g"
-              placeholder="kcal/100g"
               value="{{ food.energy_per_100g }}" min="0" />
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_total" title="Total energy" placeholder="kcal"
+            <input type="number" class="form-control form-control-sm" name="energy_total" title="Total energy"
               value="{{ food.energy_total }}" min="0" />
           </div>
         </div>
@@ -41,28 +50,24 @@
       </div>
     </form>
     {% endfor %}
-    <form class="row g-1 mb-4 mb-sm-2 justify-content-end" action="{{ url_for('tracker.add_food_consumed') }}" method="post"
+    <form class="row g-1 mb-2 justify-content-end" action="{{ url_for('tracker.add_food_consumed') }}" method="post"
       data-form-id="new-{{ meal.id }}">
-      <div class="col-12 col-sm">
+      <div class="col">
         <input type="hidden" name="meal_id" value="{{ meal.id }}" />
-        <input type="text" class="form-control form-control-sm food-name-input" name="name" placeholder="Name" readonly
+        <input type="text" class="form-control form-control-sm food-name-input" name="name" readonly
           data-bs-toggle="offcanvas" data-bs-target="#foodSelector" value="" autocomplete="off" />
       </div>
-      <div class="col-12 col-sm">
+      <div class="col">
         <div class="row g-1">
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="amount_grams" title="Amount (grams)" placeholder="g"
-              value=""
-              min="0" />
+            <input type="number" class="form-control form-control-sm" name="amount_grams" title="Amount (grams)" value="" min="0" />
           </div>
           <div class="col-4">
             <input type="number" class="form-control form-control-sm" name="energy_per_100g" title="Energy per 100 g"
-              placeholder="kcal/100g"
               value="" min="0" />
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_total" title="Total energy" placeholder="kcal"
-              value=""
+            <input type="number" class="form-control form-control-sm" name="energy_total" title="Total energy" value=""
               min="0" />
           </div>
         </div>
@@ -76,9 +81,9 @@
         </div>
       </div>
     </form>
-    <div class="row g-1 mb-4 mb-sm-2">
-      <div class="col-12 col-sm"></div>
-      <div class="col-12 col-sm">
+    <div class="row g-1 mb-2">
+      <div class="col"></div>
+      <div class="col">
         <div class="row g-1 align-items-baseline">
           <div class="col-4"></div>
           <div class="col-4 text-end">Total:</div>

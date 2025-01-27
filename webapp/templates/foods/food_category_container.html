@@ -1,44 +1,72 @@
-<section class="container-md mb-3">
+<section class="container-md mx-auto mb-3 meal-container" style="min-width: 600px;">
   <header>
     <h2>{{ category.name }}</h2>
   </header>
   <div>
+    <div class="row g-1 mb-1 small opacity-50 text-nowrap">
+      <div class="col-3 col-lg">
+        <span class="px-2">Name</span>
+      </div>
+      <div class="col-6 col-lg">
+        <div class="row g-1 align-items-baseline">
+          <div class="col-4">
+            <span class="px-2">g</span>
+          </div>
+          <div class="col-4">
+            <span class="px-2">kcal/100g</span>
+          </div>
+          <div class="col-4">
+            <span class="px-2">kcal</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 col-lg">
+        <div class="d-flex gap-1 justify-content-between">
+          <span class="px-2 w-50">Stock</span>
+          <span class="px-2 w-50">Date</span>
+        </div>
+      </div>
+      <div class="col d-none d-lg-block">
+        <span class="px-2">Comment</span>
+      </div>
+      <div class="col-auto" style="width: 115px"></div>
+    </div>
     {% for food in foods %}
     {% if food.category_id == category.id %}
-    <form class="row g-1 mb-4 mb-md-2 justify-content-end" action="{{ url_for('foods.edit_food', food_id=food.id) }}"
+    <form class="row g-1 mb-3 mb-lg-2 justify-content-end" action="{{ url_for('foods.edit_food', food_id=food.id) }}"
       method="post">
-      <div class="col-12 col-sm-6 col-md-3 col-lg">
+      <div class="col-3 col-lg">
         <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
-        <input type="text" class="form-control form-control-sm" name="name" placeholder="Name" value="{{ food.name }}"
-          autocomplete="off"
+        <input type="text" class="form-control form-control-sm" name="name" value="{{ food.name }}" autocomplete="off"
           required />
       </div>
-      <div class="col col-sm-6 col-md-6 col-lg">
+      <div class="col-6 col-lg">
         <div class="row g-1">
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="portion_grams" placeholder="Portion (g)"
+            <input type="number" class="form-control form-control-sm" name="portion_grams"
               value="{{ food.portion_grams }}" min="0" />
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g"
+            <input type="number" class="form-control form-control-sm" name="energy_per_100g"
               value="{{ food.energy_per_100g }}" min="0" />
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_portion" placeholder="kcal"
+            <input type="number" class="form-control form-control-sm" name="energy_per_portion"
               value="{{ food.energy_per_portion }}" min="0" />
           </div>
         </div>
       </div>
-      <div class="col-12 col-sm-6 col-md-3 col-lg">
+      <div class="col-3 col-lg">
         <div class="d-flex gap-1 justify-content-between">
           <input type="text" class="form-control form-control-sm" name="stock_amount" value="{{ food.stock_amount }}"
-            placeholder="Stock" autocomplete="off">
+            autocomplete="off">
           <input type="text" class="form-control form-control-sm" name="due_date" value="{{ food.due_date }}"
-            placeholder="Date" autocomplete="off">
+            autocomplete="off">
         </div>
       </div>
-      <div class="col-12 col-sm-6 col-md">
-        <input type="text" class="form-control form-control-sm" name="comment" placeholder="Comment" value="{{ food.comment }}"
+      <div class="col-auto d-block d-lg-none" style="width: 115px"></div>
+      <div class="col">
+        <input type="text" class="form-control form-control-sm" name="comment" value="{{ food.comment }}"
           autocomplete="off">
       </div>
       <div class="col-auto" style="width: 115px">
@@ -48,44 +76,41 @@
           <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset"
             style="display: none;" />
           <input type="submit" class="btn btn-sm btn-outline-danger flex-grow-1 delete-button"
-            formaction="{{ url_for('foods.delete_food', food_id=food.id) }}" formmethod="post" value="Delete" title="Delete" />
+            formaction="{{ url_for('foods.delete_food', food_id=food.id) }}" formmethod="post" value="Delete"
+            title="Delete" />
         </div>
       </div>
     </form>
     {% endif %}
     {% endfor %}
     <form class="row g-1 mb-4 mb-md-2 justify-content-end" action="{{ url_for('foods.add_food') }}" method="post">
-      <div class="col-12 col-sm-6 col-md-3 col-lg">
+      <div class="col-3 col-lg">
         <input type="hidden" name="category_id" value="{{ category.id }}" />
         <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
-        <input type="text" class="form-control form-control-sm" name="name" placeholder="Name" value="" autocomplete="off"
-          required />
+        <input type="text" class="form-control form-control-sm" name="name" value="" autocomplete="off" required />
       </div>
-      <div class="col col-sm-6 col-md-6 col-lg">
+      <div class="col-6 col-lg">
         <div class="row g-1">
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="portion_grams" placeholder="Portion (g)" value=""
-              min="0" />
+            <input type="number" class="form-control form-control-sm" name="portion_grams" value="" min="0" />
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g" placeholder="kcal/100g" value=""
-              min="0" />
+            <input type="number" class="form-control form-control-sm" name="energy_per_100g" value="" min="0" />
           </div>
           <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_portion" placeholder="kcal" value=""
-              min="0" />
+            <input type="number" class="form-control form-control-sm" name="energy_per_portion" value="" min="0" />
           </div>
         </div>
       </div>
-      <div class="col-12 col-sm-6 col-md-3 col-lg">
+      <div class="col-3 col-lg">
         <div class="d-flex gap-1 justify-content-between">
-          <input type="text" class="form-control form-control-sm" name="stock_amount" placeholder="Stock" autocomplete="off">
-          <input type="text" class="form-control form-control-sm" name="due_date" placeholder="Date" autocomplete="off">
+          <input type="text" class="form-control form-control-sm" name="stock_amount" autocomplete="off">
+          <input type="text" class="form-control form-control-sm" name="due_date" autocomplete="off">
         </div>
       </div>
-      <div class="col-12 col-sm-6 col-md">
-        <input type="text" class="form-control form-control-sm" name="comment" placeholder="Comment" value=""
-          autocomplete="off" />
+      <div class="col-auto d-block d-lg-none" style="width: 115px"></div>
+      <div class="col">
+        <input type="text" class="form-control form-control-sm" name="comment" value="" autocomplete="off" />
       </div>
       <div class="col-auto" style="width: 115px">
         <div class="d-flex gap-1">
