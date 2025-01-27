@@ -15,10 +15,10 @@
 
 <section class="container-fluid overflow-x-auto p-0" style="max-width: 800px;">
   {% for meal in meals %}
-  {% include 'tracker/day_meal_container.html' %}
+  {% include 'tracker/meal_container.html' %}
   {% endfor %}
 </section>
 
-{% include 'tracker/day_foods_offcanvas.html' %}
+{% include 'tracker/foods_offcanvas.html' %}
 
 {% endblock %}

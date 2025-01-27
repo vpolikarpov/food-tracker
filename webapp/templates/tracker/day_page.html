@@ -32,7 +32,7 @@
 {% include 'tracker/day_add_container.html' %}
 {% else %}
 {% for meal in meals %}
-{% include 'tracker/day_meal_container.html' %}
+{% include 'tracker/meal_container.html' %}
 {% endfor %}
 <div class="container-md my-5 text-center" style="max-width: 800px;">
   <form action="{{ url_for('tracker.remove_active_date') }}" method="post">
@@ -43,6 +43,6 @@
 {% endif %}
 </section>
 
-{% include 'tracker/day_foods_offcanvas.html' %}
+{% include 'tracker/foods_offcanvas.html' %}
 
 {% endblock %}
