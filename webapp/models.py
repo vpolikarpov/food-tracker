@@ -41,26 +41,28 @@ class FoodItemConsumed(db.Model):
   energy_per_100g = db.Column(db.Integer)
   energy_total = db.Column(db.Integer)
 
+  def copy_to(self, meal_id):
+    return FoodItemConsumed(
+      meal_id=meal_id,
+      name=self.name,
+      amount_grams=self.amount_grams,
+      energy_per_100g=self.energy_per_100g,
+      energy_total=self.energy_total
+    )
+
   def __repr__(self):
     return f'<FoodItemConsumed {self.date} - {self.food_item_id}>'
 
 
-class MealTemplate(db.Model):
-  id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(100), nullable=False)
-  order = db.Column(db.Integer, nullable=False, unique=True)
-
-  def __repr__(self):
-    return f'<MealTemplate {self.name}>'
-
-
 class Meal(db.Model):
   id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-  date = db.Column(db.Date, nullable=False)
+  date = db.Column(db.Date)
   order = db.Column(db.Integer, nullable=False)
   name = db.Column(db.String(100), nullable=False)
   total_energy = db.Column(db.Integer, nullable=False, default=0)
   food_items = db.relationship('FoodItemConsumed', backref='meal', lazy=True)
+
+  __table_args__ = (db.UniqueConstraint('date', 'order'),)
 
   def recalculate_total_energy(self):
     self.total_energy = sum((food.energy_total or 0)
@@ -83,9 +85,9 @@ def insert_initial_values(*args, **kwargs):
   load_csv_data(FoodCategory, 'data/food_categories.csv')
 
 
-@listens_for(MealTemplate.__table__, 'after_create')
+@listens_for(Meal.__table__, 'after_create')
 def insert_initial_values(*args, **kwargs):
-  load_csv_data(MealTemplate, 'data/meal_templates.csv')
+  load_csv_data(Meal, 'data/meal_templates.csv')
 
 
 def load_csv_data(model, file_path):

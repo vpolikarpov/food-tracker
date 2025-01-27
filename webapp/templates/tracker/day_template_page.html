@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Template{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/tracker_day.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<header class="container-md gy-2 mb-3" style="max-width: 800px;">
+  <div class="row g-1 align-items-center">
+    <h1 class="col-auto my-2">Template</h1>
+  </div>
+</header>
+
+<section class="container-fluid overflow-x-auto p-0" style="max-width: 800px;">
+  {% for meal in meals %}
+  {% include 'tracker/day_meal_container.html' %}
+  {% endfor %}
+</section>
+
+{% include 'tracker/day_foods_offcanvas.html' %}
+
+{% endblock %}

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import uuid
 
 from webapp.database import db
-from webapp.models import ActiveDay, Meal, MealTemplate, FoodItemConsumed, FoodCategory, FoodItem
+from webapp.models import ActiveDay, Meal, FoodItemConsumed, FoodCategory
 
 bp = Blueprint('tracker', __name__)
 
@@ -54,7 +54,8 @@ def day(date):
     meals=meals,
     food_categories=food_categories)
 
-@bp.route('/set_active_date', methods=['POST'])
+
+@bp.route('/day/add', methods=['POST'])
 def set_active_date():
   selected_date = request.form['date']
   parsed_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
@@ -67,27 +68,49 @@ def set_active_date():
     existing_meals = Meal.query.filter_by(date=parsed_date).all()
     if not existing_meals:
       # Get all meal templates and create meals for the selected date
-      meal_templates = MealTemplate.query.order_by(MealTemplate.order).all()
+      meal_templates = Meal.query.filter_by(
+        date=None).order_by(Meal.order).all()
       for meal_template in meal_templates:
-        new_meal = Meal(date=parsed_date,
-                        order=meal_template.order, name=meal_template.name)
+        new_meal = Meal(
+          date=parsed_date,
+          order=meal_template.order,
+          name=meal_template.name
+        )
         db.session.add(new_meal)
+
+        food_consumed = FoodItemConsumed.query.filter_by(
+          meal_id=meal_template.id).all()
+        for food in food_consumed:
+          db.session.add(food.copy_to(new_meal.id))
 
     db.session.commit()
 
   return redirect(url_for('tracker.day', date=parsed_date.strftime('%Y-%m-%d')))
 
 
-@bp.route('/remove_active_date/<date>', methods=['POST'])
-def remove_active_date(date):
-  parsed_date = datetime.strptime(date, '%Y-%m-%d').date()
+@bp.route('/day/remove', methods=['POST'])
+def remove_active_date():
+  selected_date = request.form['date']
+  parsed_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+
   active_day = ActiveDay.query.get_or_404(parsed_date)
   db.session.delete(active_day)
   db.session.commit()
   return redirect(url_for('tracker.day'))
 
 
-@bp.route('/add_food_consumed', methods=['POST'])
+@bp.route('/day/template')
+def day_template():
+  meals = Meal.query.filter_by(date=None).order_by(Meal.order).all()
+  food_categories = FoodCategory.query.order_by(FoodCategory.order).all()
+
+  return render_template(
+    'tracker/day_template_page.html',
+    meals=meals,
+    food_categories=food_categories)
+
+
+@bp.route('/food_consumed/add', methods=['POST'])
 def add_food_consumed():
   meal_id = uuid.UUID(request.form['meal_id'])
   meal = Meal.query.get_or_404(meal_id)
@@ -101,10 +124,14 @@ def add_food_consumed():
   db.session.add(new_food)
   db.session.commit()
   meal.recalculate_total_energy()
-  return redirect(url_for('tracker.day', date=meal.date.strftime('%Y-%m-%d')))
+
+  if not meal.date:
+    return redirect(url_for('tracker.day_template'))
+  else:
+    return redirect(url_for('tracker.day', date=meal.date.strftime('%Y-%m-%d')))
 
 
-@bp.route('/edit_food_consumed/<uuid:food_id>', methods=['POST'])
+@bp.route('/food_consumed/edit/<uuid:food_id>', methods=['POST'])
 def edit_food_consumed(food_id):
   food = FoodItemConsumed.query.get_or_404(food_id)
   meal = Meal.query.get_or_404(food.meal_id)
@@ -114,14 +141,22 @@ def edit_food_consumed(food_id):
   food.energy_total = request.form['energy_total']
   db.session.commit()
   meal.recalculate_total_energy()
-  return redirect(url_for('tracker.day', date=meal.date.strftime('%Y-%m-%d')))
+
+  if not meal.date:
+    return redirect(url_for('tracker.day_template'))
+  else:
+    return redirect(url_for('tracker.day', date=meal.date.strftime('%Y-%m-%d')))
 
 
-@bp.route('/delete_food_consumed/<uuid:food_id>', methods=['POST'])
+@bp.route('/food_consumed/delete/<uuid:food_id>', methods=['POST'])
 def delete_food_consumed(food_id):
   food = FoodItemConsumed.query.get_or_404(food_id)
   meal = Meal.query.get_or_404(food.meal_id)
   db.session.delete(food)
   db.session.commit()
   meal.recalculate_total_energy()
-  return redirect(url_for('tracker.day', date=meal.date.strftime('%Y-%m-%d')))
+
+  if not meal.date:
+    return redirect(url_for('tracker.day_template'))
+  else:
+    return redirect(url_for('tracker.day', date=meal.date.strftime('%Y-%m-%d')))
