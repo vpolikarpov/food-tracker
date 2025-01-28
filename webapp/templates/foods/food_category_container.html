@@ -4,20 +4,12 @@
   </header>
   <div>
     <div class="row g-1 mb-1 small opacity-50 text-nowrap">
-      <div class="col-3 col-lg">
-        <span class="px-2">Name</span>
-      </div>
+      <div class="col-3 col-lg"><span class="px-2">Name</span></div>
       <div class="col-6 col-lg">
         <div class="row g-1 align-items-baseline">
-          <div class="col-4">
-            <span class="px-2">g</span>
-          </div>
-          <div class="col-4">
-            <span class="px-2">kcal/100g</span>
-          </div>
-          <div class="col-4">
-            <span class="px-2">kcal</span>
-          </div>
+          <div class="col-4"><span class="px-2">g</span></div>
+          <div class="col-4"><span class="px-2">kcal/100g</span></div>
+          <div class="col-4"><span class="px-2">kcal</span></div>
         </div>
       </div>
       <div class="col-3 col-lg">
@@ -31,95 +23,11 @@
       </div>
       <div class="col-auto" style="width: 115px"></div>
     </div>
-    {% for food in foods %}
-    {% if food.category_id == category.id %}
-    <form class="row g-1 mb-3 mb-lg-2 justify-content-end" action="{{ url_for('foods.edit_food', food_id=food.id) }}"
-      method="post">
-      <div class="col-3 col-lg">
-        <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
-        <input type="text" class="form-control form-control-sm" name="name" value="{{ food.name }}" autocomplete="off"
-          required />
-      </div>
-      <div class="col-6 col-lg">
-        <div class="row g-1">
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="portion_grams"
-              value="{{ food.portion_grams }}" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g"
-              value="{{ food.energy_per_100g }}" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_portion"
-              value="{{ food.energy_per_portion }}" min="0" />
-          </div>
-        </div>
-      </div>
-      <div class="col-3 col-lg">
-        <div class="d-flex gap-1 justify-content-between">
-          <input type="text" class="form-control form-control-sm" name="stock_amount" value="{{ food.stock_amount }}"
-            autocomplete="off">
-          <input type="text" class="form-control form-control-sm" name="due_date" value="{{ food.due_date }}"
-            autocomplete="off">
-        </div>
-      </div>
-      <div class="col-auto d-block d-lg-none" style="width: 115px"></div>
-      <div class="col">
-        <input type="text" class="form-control form-control-sm" name="comment" value="{{ food.comment }}"
-          autocomplete="off">
-      </div>
-      <div class="col-auto" style="width: 115px">
-        <div class="d-flex gap-1">
-          <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" title="Save"
-            style="display: none;" />
-          <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset"
-            style="display: none;" />
-          <input type="submit" class="btn btn-sm btn-outline-danger flex-grow-1 delete-button"
-            formaction="{{ url_for('foods.delete_food', food_id=food.id) }}" formmethod="post" value="Delete"
-            title="Delete" />
-        </div>
-      </div>
-    </form>
-    {% endif %}
+    {% for food_item in foods|selectattr('category_id', 'eq', category.id) %}
+    {% include 'foods/food_item_form.html' %}
     {% endfor %}
-    <form class="row g-1 mb-4 mb-md-2 justify-content-end" action="{{ url_for('foods.add_food') }}" method="post">
-      <div class="col-3 col-lg">
-        <input type="hidden" name="category_id" value="{{ category.id }}" />
-        <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
-        <input type="text" class="form-control form-control-sm" name="name" value="" autocomplete="off" required />
-      </div>
-      <div class="col-6 col-lg">
-        <div class="row g-1">
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="portion_grams" value="" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g" value="" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_portion" value="" min="0" />
-          </div>
-        </div>
-      </div>
-      <div class="col-3 col-lg">
-        <div class="d-flex gap-1 justify-content-between">
-          <input type="text" class="form-control form-control-sm" name="stock_amount" autocomplete="off">
-          <input type="text" class="form-control form-control-sm" name="due_date" autocomplete="off">
-        </div>
-      </div>
-      <div class="col-auto d-block d-lg-none" style="width: 115px"></div>
-      <div class="col">
-        <input type="text" class="form-control form-control-sm" name="comment" value="" autocomplete="off" />
-      </div>
-      <div class="col-auto" style="width: 115px">
-        <div class="d-flex gap-1">
-          <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" title="Save"
-            style="display: none;" />
-          <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset"
-            style="display: none;" />
-        </div>
-      </div>
-    </form>
+    {% with food_item=None %}
+    {% include 'foods/food_item_form.html' %}
+    {% endwith %}
   </div>
 </section>

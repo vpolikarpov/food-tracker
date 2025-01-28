@@ -1,25 +1,19 @@
 $(document).ready(function () {
-  $('input[name="portion_grams"], input[name="energy_per_100g"], input[name="energy_per_portion"]').on('input', function () {
+  $('input[type="number"]').on('input', function () {
     $(this).addClass('bg-warning');
-    var form = $(this).closest('form');
-    form.find('.save-button, .reset-button').show();
-    form.find('.delete-button').hide();
+    $(this).closest('form').addClass('changed');
     performCalculations($(this));
   });
 
-  // Add highlighting for name, comment, stock, and date inputs
-  $('input[name="name"], input[name="comment"], input[name="stock_amount"], input[name="due_date"]').on('input', function () {
+  $('input[type="text"]').on('input', function () {
     $(this).addClass('bg-warning');
-    var form = $(this).closest('form');
-    form.find('.save-button, .reset-button').show();
-    form.find('.delete-button').hide();
+    $(this).closest('form').addClass('changed');
   });
 
   $('.reset-button').on('click', function () {
     var form = $(this).closest('form');
     form.find('input').removeClass('bg-warning');
-    form.find('.save-button, .reset-button').hide();
-    form.find('.delete-button').show();
+    form.removeClass('changed');
   });
 
   var lastChangedInput = null;
