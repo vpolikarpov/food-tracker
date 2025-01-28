@@ -29,12 +29,9 @@ $(document).ready(function () {
     filterFoodList();
   });
 
-  // When user changes values manually, highlight the inputs and change the save button
-  $('input[name="amount_grams"], input[name="energy_per_100g"], input[name="energy_total"]').on('input', function () {
+  $('input[type="number"]').on('input', function () {
     $(this).addClass('bg-warning');
-    var form = $(this).closest('form');
-    form.find('.save-button, .reset-button').show();
-    form.find('.delete-button').hide();
+    $(this).closest('form').addClass('changed');
     performCalculations($(this));
   });
   var lastChangedInput = null;
@@ -43,8 +40,7 @@ $(document).ready(function () {
   $('.reset-button').on('click', function () {
     var form = $(this).closest('form');
     form.find('input').removeClass('bg-warning');
-    form.find('.save-button, .reset-button').hide();
-    form.find('.delete-button').show();
+    $(this).closest('form').removeClass('changed');
 
     // We need to reset the form explicitly
     // for the total meal intake to be updated correctly
@@ -87,9 +83,7 @@ $(document).ready(function () {
       originForm.find('input[name="energy_total"]').val(selectedFoodButton.data('energy-per-portion')).addClass('bg-warning');
     }
 
-    originForm.find('input.btn-outline-primary').removeClass('btn-outline-primary').addClass('btn-primary');
-    originForm.find('.save-button, .reset-button').show();
-    originForm.find('.delete-button').hide();
+    originForm.addClass('changed');
     $('#foodSelector').offcanvas('hide');
 
     updateTotalMealIntake(originForm.closest('.meal-container'));

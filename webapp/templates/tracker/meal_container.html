@@ -14,73 +14,12 @@
       </div>
       <div class="col-auto" style="width: 115px"></div>
     </div>
-    {% for food in meal.food_items %}
-    <form class="row g-1 mb-2 justify-content-end" action="{{ url_for('tracker.edit_food_consumed', food_id=food.id) }}"
-      method="post" data-form-id="{{ food.id }}">
-      <div class="col">
-        <input type="hidden" name="meal_id" value="{{ meal.id }}" />
-        <input type="text" class="form-control form-control-sm food-name-input" title="Name" name="name"
-          value="{{ food.name }}" readonly data-bs-toggle="offcanvas" data-bs-target="#foodSelector"
-          autocomplete="off" />
-      </div>
-      <div class="col">
-        <div class="row g-1">
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" title="Amount (grams)" name="amount_grams"
-              value="{{ food.amount_grams }}" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g" title="Energy per 100 g"
-              value="{{ food.energy_per_100g }}" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_total" title="Total energy"
-              value="{{ food.energy_total }}" min="0" />
-          </div>
-        </div>
-      </div>
-      <div class="col-auto" style="width: 115px">
-        <div class="d-flex gap-1">
-          <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" style="display: none;" />
-          <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" style="display: none;" />
-          <input type="submit" class="btn btn-sm btn-outline-danger flex-grow-1 delete-button"
-            formaction="{{ url_for('tracker.delete_food_consumed', food_id=food.id) }}" formmethod="post"
-            value="Delete" />
-        </div>
-      </div>
-    </form>
+    {% for food_item in meal.food_items %}
+    {% include 'tracker/food_item_form.html' %}
     {% endfor %}
-    <form class="row g-1 mb-2 justify-content-end" action="{{ url_for('tracker.add_food_consumed') }}" method="post"
-      data-form-id="new-{{ meal.id }}">
-      <div class="col">
-        <input type="hidden" name="meal_id" value="{{ meal.id }}" />
-        <input type="text" class="form-control form-control-sm food-name-input" name="name" readonly
-          data-bs-toggle="offcanvas" data-bs-target="#foodSelector" value="" autocomplete="off" />
-      </div>
-      <div class="col">
-        <div class="row g-1">
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="amount_grams" title="Amount (grams)" value="" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_per_100g" title="Energy per 100 g"
-              value="" min="0" />
-          </div>
-          <div class="col-4">
-            <input type="number" class="form-control form-control-sm" name="energy_total" title="Total energy" value=""
-              min="0" />
-          </div>
-        </div>
-      </div>
-      <div class="col-auto" style="width: 115px">
-        <div class="d-flex gap-1">
-          <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" title="Save"
-            style="display: none;" />
-          <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset"
-            style="display: none;" />
-        </div>
-      </div>
-    </form>
+    {% with food_item=None %}
+    {% include 'tracker/food_item_form.html' %}
+    {% endwith %}
     <div class="row g-1 mb-2">
       <div class="col"></div>
       <div class="col">

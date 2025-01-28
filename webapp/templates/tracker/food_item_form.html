@@ -1,0 +1,39 @@
+{% set is_new = food_item is none %}
+{% set save_action = url_for('tracker.add_food_consumed') if is_new else url_for('tracker.edit_food_consumed',
+food_id=food_item.id) %}
+{% set delete_action = url_for('tracker.delete_food_consumed', food_id=food_item.id) %}
+{% set form_id = 'new-' ~ meal.id if is_new else food_item.id %}
+{% set form_class = 'food-item' ~ (' food-item-new' if is_new else '') %}
+<form class="row g-1 mb-2 justify-content-end {{form_class}}" action="{{ save_action }}" method="post"
+  data-form-id="{{ form_id }}">
+  <div class="col">
+    <input type="hidden" name="meal_id" value="{{ meal.id }}" />
+    <input type="text" class="form-control form-control-sm food-name-input" name="name" title="Name"
+      value="{{ food_item.name }}" readonly data-bs-toggle="offcanvas" data-bs-target="#foodSelector"
+      autocomplete="off" />
+  </div>
+  <div class="col">
+    <div class="row g-1">
+      <div class="col-4">
+        <input type="number" class="form-control form-control-sm" name="amount_grams" title="Amount (grams)"
+          value="{{ food_item.amount_grams }}" min="0" />
+      </div>
+      <div class="col-4">
+        <input type="number" class="form-control form-control-sm" name="energy_per_100g" title="Energy per 100 g"
+          value="{{ food_item.energy_per_100g }}" min="0" />
+      </div>
+      <div class="col-4">
+        <input type="number" class="form-control form-control-sm" name="energy_total" title="Total energy"
+          value="{{ food_item.energy_total }}" min="0" />
+      </div>
+    </div>
+  </div>
+  <div class="col-auto" style="width: 115px">
+    <div class="d-flex gap-1">
+      <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" title="Save" />
+      <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset" />
+      <input type="submit" class="btn btn-sm btn-outline-danger flex-grow-1 delete-button"
+        formaction="{{ delete_action }}" formmethod="post" value="Delete" />
+    </div>
+  </div>
+</form>

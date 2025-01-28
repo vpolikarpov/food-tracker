@@ -2,6 +2,10 @@
 
 {% block title %}{{ date }}{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tracker_day.css') }}">
+{% endblock %}
+
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/tracker_day.js') }}"></script>
 {% endblock %}

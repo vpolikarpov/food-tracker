@@ -1,0 +1,21 @@
+form.food-item .save-button,
+form.food-item .reset-button {
+  display: none;
+}
+
+form.food-item .delete-button {
+  display: inline-block;
+}
+
+form.food-item.food-item-new .delete-button {
+  display: none;
+}
+
+form.food-item.changed .save-button,
+form.food-item.changed .reset-button {
+  display: inline-block;
+}
+
+form.food-item.changed .delete-button {
+  display: none;
+}
