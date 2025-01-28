@@ -40,7 +40,7 @@ $(document).ready(function () {
     } else {
       lastChangedInput = changedInput;
 
-      if (grams && energyPer100g && totalEnergy) {
+      if (!isNaN(grams) && !isNaN(energyPer100g) && !isNaN(totalEnergy)) {
         if (changedInput.is(gramsInput) || changedInput.is(energyPer100gInput)) {
           targetInput = totalEnergyInput;
         }
@@ -49,13 +49,13 @@ $(document).ready(function () {
         }
       }
 
-      if (grams && energyPer100g && !totalEnergy && !changedInput.is(totalEnergyInput)) {
+      if (!isNaN(grams) && !isNaN(energyPer100g) && isNaN(totalEnergy) && !changedInput.is(totalEnergyInput)) {
         targetInput = totalEnergyInput;
       }
-      if (grams && !energyPer100g && totalEnergy && !changedInput.is(energyPer100gInput)) {
+      if (!isNaN(grams) && isNaN(energyPer100g) && !isNaN(totalEnergy) && !changedInput.is(energyPer100gInput)) {
         targetInput = energyPer100gInput;
       }
-      if (!grams && energyPer100g && totalEnergy && !changedInput.is(gramsInput)) {
+      if (isNaN(grams) && !isNaN(energyPer100g) && !isNaN(totalEnergy) && !changedInput.is(gramsInput)) {
         targetInput = gramsInput;
       }
 
