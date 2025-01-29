@@ -1,37 +1,39 @@
-<section class="container-fluid mx-auto mb-3 meal-container" style="min-width: 600px;">
+<section class="container-fluid mx-auto mb-3 meal-container">
   <header>
     <h3>{{ meal.name }}</h3>
   </header>
-  <div>
-    <div class="row g-1 mb-1 small opacity-50 text-nowrap">
-      <div class="col"><span class="px-2">Name</span></div>
-      <div class="col">
-        <div class="row g-1 align-items-baseline">
-          <div class="col-4"><span class="px-2">Serving, g</span></div>
-          <div class="col-4"><span class="px-2">kcal/100g</span></div>
-          <div class="col-4"><span class="px-2">Energy, kcal</span></div>
-        </div>
-      </div>
-      <div class="col-auto" style="width: 115px"></div>
-    </div>
-    {% for food_item in meal.food_items %}
-    {% include 'tracker/food_item_form.html' %}
-    {% endfor %}
-    {% with food_item=None %}
-    {% include 'tracker/food_item_form.html' %}
-    {% endwith %}
-    <div class="row g-1 mb-2">
-      <div class="col"></div>
-      <div class="col">
-        <div class="row g-1 align-items-baseline">
-          <div class="col-4"></div>
-          <div class="col-4 text-end">Total:</div>
-          <div class="col-4">
-            <span type="text" class="form-control form-control-sm meal-total-energy">{{ meal.total_energy }} kcal</span>
+  <div class="overflow-x-auto">
+    <div class="m-1" style="min-width: 600px;">
+      <div class="row g-1 mb-1 small opacity-50 text-nowrap">
+        <div class="col"><span class="px-2">Name</span></div>
+        <div class="col">
+          <div class="row g-1 align-items-baseline">
+            <div class="col-4"><span class="px-2">Serving, g</span></div>
+            <div class="col-4"><span class="px-2">kcal/100g</span></div>
+            <div class="col-4"><span class="px-2">Energy, kcal</span></div>
           </div>
         </div>
+        <div class="col-auto" style="width: 115px"></div>
       </div>
-      <div class="col-auto" style="width: 115px"></div>
+      {% for food_item in meal.food_items %}
+      {% include 'tracker/food_item_form.html' %}
+      {% endfor %}
+      {% with food_item=None %}
+      {% include 'tracker/food_item_form.html' %}
+      {% endwith %}
+      <div class="row g-1 mb-2">
+        <div class="col"></div>
+        <div class="col">
+          <div class="row g-1 align-items-baseline">
+            <div class="col-4"></div>
+            <div class="col-4 text-end">Total:</div>
+            <div class="col-4">
+              <span type="text" class="form-control form-control-sm meal-total-energy">{{ meal.total_energy }} kcal</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto" style="width: 115px"></div>
+      </div>
     </div>
   </div>
 </section>

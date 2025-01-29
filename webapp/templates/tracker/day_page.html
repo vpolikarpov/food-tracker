@@ -10,41 +10,51 @@
 <script src="{{ url_for('static', filename='js/tracker_day.js') }}"></script>
 {% endblock %}
 
+{% set is_date_active = active_days|selectattr('date', 'eq', date)|list %}
+
 {% block content %}
-<header class="container-md gy-2 mb-3" style="max-width: 800px;">
-  <div class="row g-1 align-items-center">
-    <h1 class="col-auto my-2">Tracker</h1>
-    <nav class="col-12">
-      <ul class="nav nav-tabs">
-        {% for day in active_days %}
-        <li class="nav-item">
-          <a class="nav-link{% if date==day.date %} active" aria-current="page{% endif %}"
-            href="{{ url_for('tracker.day', date=day.date) }}">{{ day.date }}</a>
-        </li>
-        {% endfor %}
-        <li class="nav-item">
-          <a class="nav-link{% if date==default_new_date %} active" aria-current="page{% endif %}"
-            href="{{ url_for('tracker.day', date=default_new_date) }}">+ Add day</a>
-        </li>
-      </ul>
-    </nav>
+<header class="container gy-2 mb-3 d-flex gap-2 align-items-center justify-content-between" style="max-width: 800px;">
+  <h1 class="col-auto my-2 me-auto">{{ date }}</h1>
+  {% if is_date_active %}
+  <div class="col-auto">
+    <form action="{{ url_for('tracker.remove_active_date') }}" method="post">
+      <input type="hidden" name="date" value="{{ date }}">
+      <input type="submit" class="btn btn-outline-secondary" value="Archive">
+    </form>
+  </div>
+  {% endif %}
+  <div class="btn-group col-auto">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+      Select day
+    </button>
+    <ul class="dropdown-menu">
+      {% for day in active_days %}
+      <li class="text-nowrap">
+        <a class="dropdown-item{% if date==day.date %} active{% endif %}"
+          href="{{ url_for('tracker.day', date=day.date) }}">{{ day.date }}</a>
+      </li>
+      {% endfor %}
+      {% if is_date_active %}
+      <li>
+        <hr class="dropdown-divider">
+      </li>
+      <li class="text-nowrap">
+        <a class="dropdown-item{% if date==default_new_date %} active{% endif %}"
+          href="{{ url_for('tracker.day', date=default_new_date) }}">Add day</a>
+      </li>
+      {% endif %}
+    </ul>
   </div>
 </header>
 
-<section class="container-fluid overflow-x-auto p-0" style="max-width: 800px;">
-{% if not meals %}
-{% include 'tracker/day_add_container.html' %}
-{% else %}
-{% for meal in meals %}
-{% include 'tracker/meal_container.html' %}
-{% endfor %}
-<div class="container-md my-5 text-center" style="max-width: 800px;">
-  <form action="{{ url_for('tracker.remove_active_date') }}" method="post">
-    <input type="hidden" name="date" value="{{ date }}">
-    <input type="submit" class="btn btn-info" value="Archive day">
-  </form>
-</div>
-{% endif %}
+<section class="container p-0" style="max-width: 800px;">
+  {% if not is_date_active %}
+  {% include 'tracker/day_add_container.html' %}
+  {% else %}
+  {% for meal in meals %}
+  {% include 'tracker/meal_container.html' %}
+  {% endfor %}
+  {% endif %}
 </section>
 
 {% include 'tracker/foods_offcanvas.html' %}

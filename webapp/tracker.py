@@ -28,23 +28,18 @@ def day(date):
   active_days = ActiveDay.query.order_by(ActiveDay.date).all()
 
   default_new_date = None
-  if today not in [day.date for day in active_days]:
-    # If today is not an active day, set it as the default new date
-    default_new_date = today
-  elif parsed_date not in [day.date for day in active_days]:
+  if parsed_date not in [day.date for day in active_days]:
     # If the selected date is not an active day, set it as the default new date
     default_new_date = parsed_date
+  elif today not in [day.date for day in active_days]:
+    # If today is not an active day, set it as the default new date
+    default_new_date = today
   else:
     # Otherwise, set the default new date to the day after the last active day
     default_new_date = active_days[-1].date + timedelta(days=1)
 
-  # Display meals only if the selected date is an active day
-  if parsed_date in [day.date for day in active_days]:
-    meals = Meal.query.filter_by(date=parsed_date).order_by(Meal.order).all()
-    food_categories = FoodCategory.query.order_by(FoodCategory.order).all()
-  else:
-    meals = []
-    food_categories = []
+  meals = Meal.query.filter_by(date=parsed_date).order_by(Meal.order).all()
+  food_categories = FoodCategory.query.order_by(FoodCategory.order).all()
 
   return render_template(
     'tracker/day_page.html',
