@@ -98,5 +98,5 @@ def load_csv_data(model, file_path):
         db.session.add(model(**row))
     db.session.commit()
   else:
-    print(f"File {file_path} not found. Skipping initial data load for {
-          model.__name__}.")
+    print("File {} not found. Skipping initial data load for {}.".format(
+      file_path, model.__name__))
