@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ date }}{% endblock %}
+{% block title %}{{ date.strftime('%d %b %Y') }}{% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/tracker_day.css') }}">
@@ -14,11 +14,11 @@
 
 {% block content %}
 <header class="container gy-2 mb-3 d-flex gap-2 align-items-center justify-content-between" style="max-width: 800px;">
-  <h1 class="col-auto my-2 me-auto">{{ date }}</h1>
+  <h1 class="col-auto my-2 me-auto">{{ date.strftime('%d %b %Y') }}</h1>
   {% if is_date_active %}
   <div class="col-auto">
     <form action="{{ url_for('tracker.remove_active_date') }}" method="post">
-      <input type="hidden" name="date" value="{{ date }}">
+      <input type="hidden" name="date" value="{{ date.strftime('%Y-%m-%d') }}">
       <button type="submit" class="btn btn-outline-secondary">
         <span class="d-none d-sm-inline">Archive</span>
         <span class="d-inline d-sm-none">
@@ -45,7 +45,7 @@
       {% for day in active_days %}
       <li class="text-nowrap">
         <a class="dropdown-item{% if date==day.date %} active{% endif %}"
-          href="{{ url_for('tracker.day', date=day.date) }}">{{ day.date }}</a>
+          href="{{ url_for('tracker.day', date=day.date) }}">{{ day.date.strftime('%d %b %Y') }}</a>
       </li>
       {% endfor %}
       {% if is_date_active %}
