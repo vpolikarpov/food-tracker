@@ -19,3 +19,20 @@ form.food-item.changed .reset-button {
 form.food-item.changed .delete-button {
   display: none;
 }
+form.food-item.food-item-new:last-of-type {
+  display: none;
+}
+
+form.food-item .loading-indicator {
+  display: none;
+}
+
+form.food-item.loading .save-button,
+form.food-item.loading .reset-button,
+form.food-item.loading .delete-button {
+  display: none;
+}
+
+form.food-item.loading .loading-indicator {
+  display: inline-block;
+}

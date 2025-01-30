@@ -1,4 +1,4 @@
-<section class="container-md mx-auto mb-3 meal-container" style="min-width: 600px;">
+<section class="container-md mx-auto mb-3 category-container" style="min-width: 600px;">
   <header>
     <h2>{{ category.name }}</h2>
   </header>
@@ -27,6 +27,9 @@
     {% include 'foods/food_item_form.html' %}
     {% endfor %}
     {% with food_item=None %}
+    {# Rendering the form for a new food item twice in order to
+    always have an empty form we can clone #}
+    {% include 'foods/food_item_form.html' %}
     {% include 'foods/food_item_form.html' %}
     {% endwith %}
   </div>

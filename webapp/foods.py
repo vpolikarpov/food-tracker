@@ -40,6 +40,9 @@ def edit_food(food_id):
   food.comment = request.form['comment']
   db.session.commit()
 
+  if request.headers.get('X-Requested-With') == 'FetchAPI':
+    return {}
+
   origin = request.form['origin']
   return redirect_based_on_origin(origin, food.category_id)
 
@@ -61,6 +64,12 @@ def add_food():
   db.session.add(new_food)
   db.session.commit()
 
+  if request.headers.get('X-Requested-With') == 'FetchAPI':
+    return {
+      'edit_url': url_for('foods.edit_food', food_id=new_food.id),
+      'delete_url': url_for('foods.delete_food', food_id=new_food.id)
+    }
+
   origin = request.form['origin']
   return redirect_based_on_origin(origin, category_id)
 
@@ -71,6 +80,9 @@ def delete_food(food_id):
   category_id = food.category_id
   db.session.delete(food)
   db.session.commit()
+
+  if request.headers.get('X-Requested-With') == 'FetchAPI':
+    return {}
 
   origin = request.form['origin']
   return redirect_based_on_origin(origin, category_id)
