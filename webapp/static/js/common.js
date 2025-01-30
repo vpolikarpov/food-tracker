@@ -95,7 +95,7 @@ FT.sendFoodItemForm = function (form) {
   fetch(action, {
     method: method,
     headers: {
-      'Accept': 'application/json'
+      'X-Requested-With': 'FetchAPI',
     },
     body: new FormData(form[0])
   })

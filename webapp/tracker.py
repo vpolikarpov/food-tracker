@@ -120,7 +120,7 @@ def add_food_consumed():
   db.session.commit()
   meal.recalculate_total_energy()
 
-  if request.accept_mimetypes['application/json']:
+  if request.headers.get('X-Requested-With') == 'FetchAPI':
     return {
       'edit_url': url_for('tracker.edit_food_consumed', food_id=new_food.id),
       'delete_url': url_for('tracker.delete_food_consumed', food_id=new_food.id)
@@ -142,7 +142,7 @@ def edit_food_consumed(food_id):
   db.session.commit()
   meal.recalculate_total_energy()
 
-  if request.accept_mimetypes['application/json']:
+  if request.headers.get('X-Requested-With') == 'FetchAPI':
     return {}
   if not meal.date:
     return redirect(url_for('tracker.day_template'))
@@ -158,7 +158,7 @@ def delete_food_consumed(food_id):
   db.session.commit()
   meal.recalculate_total_energy()
 
-  if request.accept_mimetypes['application/json']:
+  if request.headers.get('X-Requested-With') == 'FetchAPI':
     return {}
   if not meal.date:
     return redirect(url_for('tracker.day_template'))
