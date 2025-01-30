@@ -29,11 +29,16 @@ food_id=food_item.id) %}
     </div>
   </div>
   <div class="col-auto" style="width: 115px">
-    <div class="d-flex gap-1">
+    <div class="d-flex gap-1 h-100 align-items-center">
       <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" title="Save" />
       <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset" />
       <input type="submit" class="btn btn-sm btn-outline-danger flex-grow-1 delete-button"
         formaction="{{ delete_action }}" formmethod="post" value="Delete" />
+      <div class="flex-grow-1 loading-indicator text-center">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
     </div>
   </div>
 </form>

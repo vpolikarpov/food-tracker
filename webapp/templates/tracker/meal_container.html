@@ -19,6 +19,9 @@
       {% include 'tracker/food_item_form.html' %}
       {% endfor %}
       {% with food_item=None %}
+      {# Rendering the form for a new food item twice in order to
+      always have an empty form we can clone #}
+      {% include 'tracker/food_item_form.html' %}
       {% include 'tracker/food_item_form.html' %}
       {% endwith %}
       <div class="row g-1 mb-2">
