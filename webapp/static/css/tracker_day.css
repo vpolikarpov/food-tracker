@@ -19,6 +19,7 @@ form.food-item.changed .reset-button {
 form.food-item.changed .delete-button {
   display: none;
 }
+
 form.food-item.food-item-new:last-of-type {
   display: none;
 }
