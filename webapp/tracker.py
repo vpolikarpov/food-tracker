@@ -1,6 +1,7 @@
 from flask import Blueprint, url_for, request, redirect, render_template
 from datetime import datetime, timedelta
 from sqlalchemy import func
+from sqlalchemy.orm import selectinload
 
 import uuid
 
@@ -43,9 +44,9 @@ def day(date):
     default_new_date = active_days[-1].date + timedelta(days=1)
 
   meals = db.session.execute(
-    db.select(Meal).where(Meal.date == parsed_date).order_by(Meal.position)).scalars().all()
+    db.select(Meal).options(selectinload(Meal.food_items)).where(Meal.date == parsed_date).order_by(Meal.position)).scalars().all()
   food_categories = db.session.execute(
-    db.select(FoodCategory).order_by(FoodCategory.position)).scalars().all()
+    db.select(FoodCategory).options(selectinload(FoodCategory.food_items)).order_by(FoodCategory.position)).scalars().all()
 
   return render_template(
     'tracker/day_page.html',
@@ -75,23 +76,21 @@ def set_active_date():
     if existing_meals_count == 0:
       # Get all meal templates and create meals for the selected date
       meal_templates = db.session.execute(
-        db.select(Meal).where(Meal.date == None).order_by(Meal.position)).scalars()
+        db.select(Meal).options(selectinload(Meal.food_items)).where(Meal.date == None).order_by(Meal.position)).scalars()
       for meal_template in meal_templates:
         new_meal = Meal(
           date=selected_date,
           position=meal_template.position,
           name=meal_template.name
         )
-        db.session.add(new_meal)
 
-        food_consumed = db.session.execute(
-          db.select(FoodConsumptionRecord).where(FoodConsumptionRecord.meal_id == meal_template.id)).scalars()
-        for food in food_consumed:
-          db.session.add(food.copy_to(new_meal.id))
+        for template in meal_template.food_items:
+          template.copy_to(new_meal)
 
         new_meal.recalculate_total_energy(commit=False)
+        db.session.add(new_meal)
 
-    db.session.commit()
+      db.session.commit()
 
   return redirect(url_for('tracker.day', date=selected_date.strftime('%Y-%m-%d')))
 

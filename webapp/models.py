@@ -60,9 +60,9 @@ class FoodConsumptionRecord(db.Model):
 
   meal: Mapped["Meal"] = relationship(back_populates='food_items')
 
-  def copy_to(self, meal_id):
+  def copy_to(self, meal):
     return FoodConsumptionRecord(
-      meal_id=meal_id,
+      meal=meal,
       name=self.name,
       amount_grams=self.amount_grams,
       energy_per_100g=self.energy_per_100g,
