@@ -1,8 +1,15 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import current_app
+from sqlalchemy.orm import DeclarativeBase
+
 import click
 
-db = SQLAlchemy()
+
+class Base(DeclarativeBase):
+  pass
+
+
+db = SQLAlchemy(model_class=Base)
 
 
 def init_app(app):

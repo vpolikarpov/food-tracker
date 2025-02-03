@@ -9,13 +9,16 @@ bp = Blueprint('foods', __name__)
 @bp.route('/foods/')
 @bp.route('/foods/<int:category_id>')
 def list(category_id=None):
-  categories = FoodCategory.query.order_by(FoodCategory.order).all()
+  categories = db.session.execute(
+    db.select(FoodCategory).order_by(FoodCategory.position)).scalars().all()
   if category_id:
-    foods = FoodItem.query.filter_by(
-      category_id=category_id).order_by(FoodItem.name).all()
-    selected_category = FoodCategory.query.get(category_id)
+    foods = db.session.execute(
+      db.select(FoodItem).where(FoodItem.category_id == category_id).order_by(FoodItem.name)).scalars().all()
+    selected_category = db.session.execute(
+      db.select(FoodCategory).where(FoodCategory.id == category_id)).scalar()
   else:
-    foods = FoodItem.query.order_by(FoodItem.name).all()
+    foods = db.session.execute(
+      db.select(FoodItem).order_by(FoodItem.name)).scalars().all()
     selected_category = None
 
   return render_template('foods/foods_page.html', categories=categories, foods=foods, selected_category=selected_category)
@@ -30,35 +33,35 @@ def redirect_based_on_origin(origin, category_id):
 
 @bp.route('/foods/edit/<uuid:food_id>', methods=['POST'])
 def edit_food(food_id):
-  food = FoodItem.query.get_or_404(food_id)
-  food.name = request.form['name']
-  food.portion_grams = request.form['portion_grams']
-  food.energy_per_100g = request.form['energy_per_100g']
-  food.energy_per_portion = request.form['energy_per_portion']
-  food.stock_amount = request.form['stock_amount']
-  food.due_date = request.form['due_date']
-  food.comment = request.form['comment']
+  food = db.get_or_404(FoodItem, food_id)
+  food.name = request.form.get('name')
+  food.portion_grams = nullable_int(request.form.get('portion_grams'))
+  food.energy_per_100g = nullable_int(request.form.get('energy_per_100g'))
+  food.energy_per_portion = nullable_int(
+    request.form.get('energy_per_portion'))
+  food.stock_amount = request.form.get('stock_amount', '')
+  food.due_date = request.form.get('due_date', '')
+  food.note = request.form.get('note', '')
   db.session.commit()
 
   if request.headers.get('X-Requested-With') == 'FetchAPI':
     return {}
 
-  origin = request.form['origin']
+  origin = request.form.get('origin')
   return redirect_based_on_origin(origin, food.category_id)
 
 
 @bp.route('/foods/add', methods=['POST'])
 def add_food():
-  category_id = request.form['category_id']
+  category_id = int(request.form.get('category_id'))
   new_food = FoodItem(
-    id=uuid.uuid4(),
-    name=request.form['name'],
-    portion_grams=request.form['portion_grams'],
-    energy_per_100g=request.form['energy_per_100g'],
-    energy_per_portion=request.form['energy_per_portion'],
-    stock_amount=request.form['stock_amount'],
-    due_date=request.form['due_date'],
-    comment=request.form['comment'],
+    name=request.form.get('name'),
+    portion_grams=nullable_int(request.form.get('portion_grams')),
+    energy_per_100g=nullable_int(request.form.get('energy_per_100g')),
+    energy_per_portion=nullable_int(request.form.get('energy_per_portion')),
+    stock_amount=request.form.get('stock_amount', ''),
+    due_date=request.form.get('due_date', ''),
+    note=request.form.get('note', ''),
     category_id=category_id
   )
   db.session.add(new_food)
@@ -70,13 +73,13 @@ def add_food():
       'delete_url': url_for('foods.delete_food', food_id=new_food.id)
     }
 
-  origin = request.form['origin']
+  origin = request.form.get('origin')
   return redirect_based_on_origin(origin, category_id)
 
 
 @bp.route('/foods/delete/<uuid:food_id>', methods=['POST'])
 def delete_food(food_id):
-  food = FoodItem.query.get_or_404(food_id)
+  food = db.get_or_404(FoodItem, food_id)
   category_id = food.category_id
   db.session.delete(food)
   db.session.commit()
@@ -84,5 +87,11 @@ def delete_food(food_id):
   if request.headers.get('X-Requested-With') == 'FetchAPI':
     return {}
 
-  origin = request.form['origin']
+  origin = request.form.get('origin')
   return redirect_based_on_origin(origin, category_id)
+
+
+def nullable_int(value):
+  if value is None or value == '':
+    return None
+  return int(value)

@@ -1,9 +1,11 @@
 from flask import Blueprint, url_for, request, redirect, render_template
 from datetime import datetime, timedelta
+from sqlalchemy import func
+
 import uuid
 
 from webapp.database import db
-from webapp.models import ActiveDay, Meal, FoodItemConsumed, FoodCategory
+from webapp.models import ActiveDay, Meal, FoodConsumptionRecord, FoodCategory
 
 bp = Blueprint('tracker', __name__)
 
@@ -11,6 +13,7 @@ bp = Blueprint('tracker', __name__)
 @bp.route('/')
 def home():
   return redirect(url_for('tracker.day'))
+
 
 @bp.route('/day/', defaults={'date': None})
 @bp.route('/day/<date>')
@@ -25,7 +28,8 @@ def day(date):
   else:
     parsed_date = today
 
-  active_days = ActiveDay.query.order_by(ActiveDay.date).all()
+  active_days = db.session.execute(
+    db.select(ActiveDay).order_by(ActiveDay.date)).scalars().all()
 
   default_new_date = None
   if parsed_date not in [day.date for day in active_days]:
@@ -38,8 +42,10 @@ def day(date):
     # Otherwise, set the default new date to the day after the last active day
     default_new_date = active_days[-1].date + timedelta(days=1)
 
-  meals = Meal.query.filter_by(date=parsed_date).order_by(Meal.order).all()
-  food_categories = FoodCategory.query.order_by(FoodCategory.order).all()
+  meals = db.session.execute(
+    db.select(Meal).where(Meal.date == parsed_date).order_by(Meal.position)).scalars().all()
+  food_categories = db.session.execute(
+    db.select(FoodCategory).order_by(FoodCategory.position)).scalars().all()
 
   return render_template(
     'tracker/day_page.html',
@@ -52,43 +58,50 @@ def day(date):
 
 @bp.route('/day/add', methods=['POST'])
 def set_active_date():
-  selected_date = request.form['date']
-  parsed_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+  selected_date = datetime.strptime(
+    request.form.get('date'), '%Y-%m-%d').date()
 
-  if not ActiveDay.query.get(parsed_date):
-    new_active_date = ActiveDay(date=parsed_date)
+  active_day = db.session.execute(
+    db.select(ActiveDay).where(ActiveDay.date == selected_date)).scalar()
+
+  if not active_day:
+    new_active_date = ActiveDay(date=selected_date)
     db.session.add(new_active_date)
 
     # Check if there are any meals for the selected date
-    existing_meals = Meal.query.filter_by(date=parsed_date).all()
-    if not existing_meals:
+    existing_meals_count = db.session.execute(
+      db.select(func.count(Meal.id)).where(Meal.date == selected_date)).scalar()
+
+    if existing_meals_count == 0:
       # Get all meal templates and create meals for the selected date
-      meal_templates = Meal.query.filter_by(
-        date=None).order_by(Meal.order).all()
+      meal_templates = db.session.execute(
+        db.select(Meal).where(Meal.date == None).order_by(Meal.position)).scalars()
       for meal_template in meal_templates:
         new_meal = Meal(
-          date=parsed_date,
-          order=meal_template.order,
+          date=selected_date,
+          position=meal_template.position,
           name=meal_template.name
         )
         db.session.add(new_meal)
 
-        food_consumed = FoodItemConsumed.query.filter_by(
-          meal_id=meal_template.id).all()
+        food_consumed = db.session.execute(
+          db.select(FoodConsumptionRecord).where(FoodConsumptionRecord.meal_id == meal_template.id)).scalars()
         for food in food_consumed:
           db.session.add(food.copy_to(new_meal.id))
 
+        new_meal.recalculate_total_energy(commit=False)
+
     db.session.commit()
 
-  return redirect(url_for('tracker.day', date=parsed_date.strftime('%Y-%m-%d')))
+  return redirect(url_for('tracker.day', date=selected_date.strftime('%Y-%m-%d')))
 
 
 @bp.route('/day/remove', methods=['POST'])
 def remove_active_date():
-  selected_date = request.form['date']
-  parsed_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+  active_day_date = datetime.strptime(
+    request.form.get('date'), '%Y-%m-%d').date()
 
-  active_day = ActiveDay.query.get_or_404(parsed_date)
+  active_day = db.get_or_404(ActiveDay, active_day_date)
   db.session.delete(active_day)
   db.session.commit()
   return redirect(url_for('tracker.day'))
@@ -96,8 +109,10 @@ def remove_active_date():
 
 @bp.route('/day/template')
 def day_template():
-  meals = Meal.query.filter_by(date=None).order_by(Meal.order).all()
-  food_categories = FoodCategory.query.order_by(FoodCategory.order).all()
+  meals = db.session.execute(
+    db.select(Meal).where(Meal.date == None).order_by(Meal.position)).scalars().all()
+  food_categories = db.session.execute(
+    db.select(FoodCategory).order_by(FoodCategory.position)).scalars().all()
 
   return render_template(
     'tracker/day_template_page.html',
@@ -107,18 +122,18 @@ def day_template():
 
 @bp.route('/food_consumed/add', methods=['POST'])
 def add_food_consumed():
-  meal_id = uuid.UUID(request.form['meal_id'])
-  meal = Meal.query.get_or_404(meal_id)
-  new_food = FoodItemConsumed(
+  meal_id = uuid.UUID(request.form.get('meal_id'))
+  meal = db.get_or_404(Meal, meal_id)
+  new_food = FoodConsumptionRecord(
     meal_id=meal_id,
-    name=request.form['name'],
-    amount_grams=request.form['amount_grams'],
-    energy_per_100g=request.form['energy_per_100g'],
-    energy_total=request.form['energy_total']
+    name=request.form.get('name'),
+    amount_grams=nullable_int(request.form.get('amount_grams')),
+    energy_per_100g=nullable_int(request.form.get('energy_per_100g')),
+    energy_total=nullable_int(request.form.get('energy_total'))
   )
   db.session.add(new_food)
+  meal.recalculate_total_energy(commit=False)
   db.session.commit()
-  meal.recalculate_total_energy()
 
   if request.headers.get('X-Requested-With') == 'FetchAPI':
     return {
@@ -133,14 +148,14 @@ def add_food_consumed():
 
 @bp.route('/food_consumed/edit/<uuid:food_id>', methods=['POST'])
 def edit_food_consumed(food_id):
-  food = FoodItemConsumed.query.get_or_404(food_id)
-  meal = Meal.query.get_or_404(food.meal_id)
-  food.name = request.form['name']
-  food.amount_grams = request.form['amount_grams']
-  food.energy_per_100g = request.form['energy_per_100g']
-  food.energy_total = request.form['energy_total']
+  food = db.get_or_404(FoodConsumptionRecord, food_id)
+  meal = food.meal
+  food.name = request.form.get('name')
+  food.amount_grams = nullable_int(request.form.get('amount_grams'))
+  food.energy_per_100g = nullable_int(request.form.get('energy_per_100g'))
+  food.energy_total = nullable_int(request.form.get('energy_total'))
+  meal.recalculate_total_energy(commit=False)
   db.session.commit()
-  meal.recalculate_total_energy()
 
   if request.headers.get('X-Requested-With') == 'FetchAPI':
     return {}
@@ -152,11 +167,11 @@ def edit_food_consumed(food_id):
 
 @bp.route('/food_consumed/delete/<uuid:food_id>', methods=['POST'])
 def delete_food_consumed(food_id):
-  food = FoodItemConsumed.query.get_or_404(food_id)
-  meal = Meal.query.get_or_404(food.meal_id)
+  food = db.get_or_404(FoodConsumptionRecord, food_id)
+  meal = food.meal
   db.session.delete(food)
+  meal.recalculate_total_energy(commit=False)
   db.session.commit()
-  meal.recalculate_total_energy()
 
   if request.headers.get('X-Requested-With') == 'FetchAPI':
     return {}
@@ -164,3 +179,9 @@ def delete_food_consumed(food_id):
     return redirect(url_for('tracker.day_template'))
   else:
     return redirect(url_for('tracker.day', date=meal.date.strftime('%Y-%m-%d')))
+
+
+def nullable_int(value):
+  if value is None or value == '':
+    return None
+  return int(value)
