@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 import uuid
 
 from webapp.database import db
-from webapp.models import ActiveDay, Meal, FoodConsumptionRecord, FoodCategory
+from webapp.models import ActiveDay, Meal, FoodConsumptionRecord, FoodCategory, FoodStockRecord
 
 bp = Blueprint('tracker', __name__)
 
@@ -45,8 +45,10 @@ def day(date):
 
   meals = db.session.execute(
     db.select(Meal).options(selectinload(Meal.food_items)).where(Meal.date == parsed_date).order_by(Meal.position)).scalars().all()
-  food_categories = db.session.execute(
+  categories = db.session.execute(
     db.select(FoodCategory).options(selectinload(FoodCategory.food_items)).order_by(FoodCategory.position)).scalars().all()
+  stock_records = db.session.execute(
+    db.select(FoodStockRecord)).scalars().all()
 
   return render_template(
     'tracker/day_page.html',
@@ -54,7 +56,8 @@ def day(date):
     active_days=active_days,
     default_new_date=default_new_date,
     meals=meals,
-    food_categories=food_categories)
+    categories=categories,
+    stock_records=stock_records)
 
 
 @bp.route('/day/add', methods=['POST'])
@@ -109,14 +112,17 @@ def remove_active_date():
 @bp.route('/day/template')
 def day_template():
   meals = db.session.execute(
-    db.select(Meal).where(Meal.date == None).order_by(Meal.position)).scalars().all()
-  food_categories = db.session.execute(
-    db.select(FoodCategory).order_by(FoodCategory.position)).scalars().all()
+    db.select(Meal).options(selectinload(Meal.food_items)).where(Meal.date == None).order_by(Meal.position)).scalars().all()
+  categories = db.session.execute(
+    db.select(FoodCategory).options(selectinload(FoodCategory.food_items)).order_by(FoodCategory.position)).scalars().all()
+  stock_records = db.session.execute(
+    db.select(FoodStockRecord)).scalars().all()
 
   return render_template(
     'tracker/day_template_page.html',
     meals=meals,
-    food_categories=food_categories)
+    categories=categories,
+    stock_records=stock_records)
 
 
 @bp.route('/food_consumed/add', methods=['POST'])

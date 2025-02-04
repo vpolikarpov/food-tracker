@@ -1,13 +1,3 @@
-form.food-item input::-webkit-outer-spin-button,
-form.food-item input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-form.food-item input[type=number] {
-  -moz-appearance: textfield;
-}
-
 form.food-item .save-button,
 form.food-item .reset-button {
   display: none;

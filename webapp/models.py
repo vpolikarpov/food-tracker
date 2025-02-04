@@ -38,10 +38,10 @@ class FoodItem(db.Model):
   energy_per_100g: Mapped[Optional[int]] = mapped_column()
   energy_per_portion: Mapped[Optional[int]] = mapped_column()
   note: Mapped[str] = mapped_column(String(200))
-  stock_amount: Mapped[str] = mapped_column(String(20))
-  due_date: Mapped[str] = mapped_column(String(30))
 
   category: Mapped["FoodCategory"] = relationship(back_populates='food_items')
+  stock_records: Mapped[List['FoodStockRecord']] = relationship(
+    back_populates='food_item')
 
   def __repr__(self):
     return f'<FoodItem - {self.name}>'
@@ -71,6 +71,25 @@ class FoodConsumptionRecord(db.Model):
 
   def __repr__(self):
     return f'<FoodConsumptionRecord {self.id} - {self.name}>'
+
+
+class FoodStockRecord(db.Model):
+  __tablename__ = 'food_stock'
+
+  id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+  food_item_id: Mapped[uuid.UUID] = mapped_column(
+    ForeignKey('food.id'), nullable=False)
+  amount_note: Mapped[str] = mapped_column(String(20))
+  date_note: Mapped[str] = mapped_column(String(30))
+
+  food_item: Mapped["FoodItem"] = relationship(
+    back_populates='stock_records')
+
+  def category_id(self):
+    return self.food_item.category_id
+
+  def __repr__(self):
+    return f'<FoodStockRecord {self.date} - {self.food_item_id}>'
 
 
 class Meal(db.Model):

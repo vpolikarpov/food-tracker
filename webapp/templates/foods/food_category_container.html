@@ -1,28 +1,8 @@
-<section class="container-md mx-auto mb-3 category-container" style="min-width: 600px;">
+<section class="container-md mx-auto mb-3 category-container" style="min-width: 360px;">
   <header>
     <h2>{{ category.name }}</h2>
   </header>
   <div>
-    <div class="row g-1 mb-1 small opacity-50 text-nowrap">
-      <div class="col-3 col-lg"><span class="px-2">Name</span></div>
-      <div class="col-6 col-lg">
-        <div class="row g-1 align-items-baseline">
-          <div class="col-4"><span class="px-2">g</span></div>
-          <div class="col-4"><span class="px-2">kcal/100g</span></div>
-          <div class="col-4"><span class="px-2">kcal</span></div>
-        </div>
-      </div>
-      <div class="col-3 col-lg">
-        <div class="d-flex gap-1 justify-content-between">
-          <span class="px-2 w-50">Stock</span>
-          <span class="px-2 w-50">Date</span>
-        </div>
-      </div>
-      <div class="col d-none d-lg-block">
-        <span class="px-2">Comment</span>
-      </div>
-      <div class="col-auto" style="width: 115px"></div>
-    </div>
     {% for food_item in foods|selectattr('category_id', 'eq', category.id) %}
     {% include 'foods/food_item_form.html' %}
     {% endfor %}

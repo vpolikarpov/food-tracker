@@ -1,7 +1,7 @@
 from flask import Flask
 from dotenv import load_dotenv
 
-from webapp import tracker, database, foods
+from webapp import database, tracker, foods, stock
 
 load_dotenv()
 
@@ -19,5 +19,6 @@ def create_app():
   # Register blueprints
   app.register_blueprint(tracker.bp)
   app.register_blueprint(foods.bp)
+  app.register_blueprint(stock.bp)
 
   return app

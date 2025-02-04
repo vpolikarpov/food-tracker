@@ -1,0 +1,19 @@
+<section class="container-md mx-auto mb-3 category-container" style="min-width: 360px;">
+  <header>
+    <h2>{{ category.name }}</h2>
+  </header>
+  <div>
+    {% for food in category.food_items %}
+    {% for stock_record in stock_records|selectattr('food_item_id', 'eq', food.id) %}
+    {% include 'stock/stock_record_form.html' %}
+    {% endfor %}
+    {% endfor %}
+
+    {% with stock_record=None %}
+    {# Rendering the form for a new food item twice in order to
+    always have an empty form we can clone #}
+    {% include 'stock/stock_record_form.html' %}
+    {% include 'stock/stock_record_form.html' %}
+    {% endwith %}
+  </div>
+</section>

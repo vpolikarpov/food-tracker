@@ -1,7 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 from webapp.models import FoodCategory, FoodItem
 from webapp.database import db
-import uuid
 
 bp = Blueprint('foods', __name__)
 
@@ -39,8 +38,6 @@ def edit_food(food_id):
   food.energy_per_100g = nullable_int(request.form.get('energy_per_100g'))
   food.energy_per_portion = nullable_int(
     request.form.get('energy_per_portion'))
-  food.stock_amount = request.form.get('stock_amount', '')
-  food.due_date = request.form.get('due_date', '')
   food.note = request.form.get('note', '')
   db.session.commit()
 
@@ -59,8 +56,6 @@ def add_food():
     portion_grams=nullable_int(request.form.get('portion_grams')),
     energy_per_100g=nullable_int(request.form.get('energy_per_100g')),
     energy_per_portion=nullable_int(request.form.get('energy_per_portion')),
-    stock_amount=request.form.get('stock_amount', ''),
-    due_date=request.form.get('due_date', ''),
     note=request.form.get('note', ''),
     category_id=category_id
   )

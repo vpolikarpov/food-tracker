@@ -1,0 +1,40 @@
+{% set is_new = stock_record is none %}
+{% set save_action = url_for('stock.add') if is_new else url_for('stock.edit', record_id=stock_record.id) %}
+{% set delete_action = url_for('stock.delete', record_id=stock_record.id) %}
+{% set form_class = 'food-item' ~ (' food-item-new' if is_new else '') %}
+<form class="row g-1 mb-3 mb-lg-2 justify-content-end {{form_class}}" action="{{ save_action }}" method="post">
+  <div class="col">
+    <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
+    <input type="hidden" name="category_id" value="{{ category.id }}" />
+    <input type="hidden" name="food_item_id" value="{{ stock_record.food_item_id }}" />
+    <input type="text" class="form-control form-control-sm food-name-input" name="food_name" title="Food name" title="Food name"
+      value="{{ stock_record.food_item.name if stock_record.food_item else '' }}" required readonly />
+  </div>
+  <div class="col-12 d-block d-sm-none"></div>
+  <div class="col-auto d-block d-sm-none" style="flex-basis: 15px"></div>
+  <div class="col col-sm-auto" style="flex-basis: 80px">
+    <div class="input-group input-group-sm">
+      <input type="text" class="form-control form-control-sm" name="amount_note" title="Amount"
+        aria-label="Amount" value="{{ stock_record.amount_note }}" autocomplete="off" />
+    </div>
+  </div>
+  <div class="col col-sm-auto" style="flex-basis: 130px">
+    <div class="input-group input-group-sm">
+      <input type="text" class="form-control form-control-sm" name="date_note" title="Date"
+        title="Date" aria-label="Date" value="{{ stock_record.date_note }}" autocomplete="off" />
+    </div>
+  </div>
+  <div class="col-auto" style="flex-basis: 115px">
+    <div class="d-flex gap-1 h-100 align-items-center">
+      <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" title="Save" />
+      <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset" />
+      <input type="submit" class="btn btn-sm btn-outline-danger flex-grow-1 delete-button"
+        formaction="{{ delete_action }}" formmethod="post" value="Delete" title="Delete" />
+      <div class="flex-grow-1 loading-indicator text-center">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
