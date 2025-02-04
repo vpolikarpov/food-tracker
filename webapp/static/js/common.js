@@ -92,7 +92,7 @@ FT.sendFoodItemForm = function (form) {
 
   form.removeClass('changed').addClass('loading');
 
-  fetch(action, {
+  return fetch(action, {
     method: method,
     headers: {
       'X-Requested-With': 'FetchAPI',

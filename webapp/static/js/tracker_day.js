@@ -52,7 +52,10 @@ $(document).ready(function () {
     // send the form data to the server and update the form state
     form.on('submit', function (event) {
       event.preventDefault();
-      FT.sendFoodItemForm($(this));
+      var mealContainer = $(this).closest('.meal-container');
+      FT.sendFoodItemForm($(this)).then(() => {
+        updateMealForms(mealContainer);
+      });
     });
   }
 
