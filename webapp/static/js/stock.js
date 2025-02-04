@@ -47,8 +47,8 @@ $(document).ready(function () {
     // focus the food name input and reset the food list
     $('#foodSelector').on('shown.bs.offcanvas', function () {
       $('#foodName').select();
-      $('.food-category-list .list-group-item').show();
-      $('.food-category-container').show();
+      $('.food-category-list .list-group-item').removeClass('d-none');
+      $('.food-category-container').removeClass('d-none');
     });
 
     // When user submits the food selector form,
@@ -77,13 +77,13 @@ $(document).ready(function () {
       var filter = $('#foodName').val().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       $('.food-category-list .list-group-item').each(function () {
         var foodName = $(this).data('food-name').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        $(this).toggle(foodName.includes(filter));
+        $(this).toggleClass('d-none', !foodName.includes(filter));
       });
       $('.food-category-container').each(function () {
         var hasVisibleItems = $(this).find('.list-group-item').filter(function () {
-          return $(this).css('display') !== 'none';
+          return $(this).hasClass('d-none') === false;
         }).length > 0;
-        $(this).toggle(hasVisibleItems);
+        $(this).toggleClass('d-none', !hasVisibleItems);
       });
     });
 
