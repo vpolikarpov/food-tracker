@@ -46,6 +46,7 @@ $(document).ready(function () {
     // When the food selector offcanvas opens,
     // focus the food name input and reset the food list
     $('#foodSelector').on('shown.bs.offcanvas', function () {
+      $('#foodName').trigger('click');
       $('#foodName').select();
       $('.food-category-list .list-group-item').removeClass('d-none');
       $('.food-category-container').removeClass('d-none');
