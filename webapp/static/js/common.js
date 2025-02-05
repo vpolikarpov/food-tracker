@@ -160,3 +160,78 @@ FT.ensureSingleNewItemForm = function (container) {
 
   return formsCreated;
 }
+
+/**
+ * Initializes the food selector offcanvas.
+ * This function sets up the event handlers for the food selector offcanvas,
+ * including focusing the food name input, filtering the food list, and handling
+ * food item selection.
+ *
+ * @param {function} itemSelectedCallback - The callback function to be called when a food item is selected.
+ * @param {boolean} [allowCustom=true] - Whether to allow custom food names that are not in the list.
+ */
+FT.initFoodSelectorOffcanvas = function (itemSelectedCallback, allowCustom = true) {
+  // When the food selector offcanvas opens,
+  // focus the food name input and reset the food list
+  $('#foodSelector').on('shown.bs.offcanvas', function () {
+    $('#foodName').trigger('click');
+    $('#foodName').select();
+    $('.food-category-list .list-group-item').removeClass('d-none');
+    $('.food-category-container').removeClass('d-none');
+  });
+
+  // When user submits the food selector form,
+  // set the selected food name and close the offcanvas
+  $('#foodSelectorForm').on('submit', function (e) {
+    e.preventDefault();
+    foodItemSelectionHandler($('#foodName').val());
+  });
+
+  // When the user clicks on a food name in the food list,
+  // set the selected food name and close the offcanvas
+  $('.food-category-list .list-group-item').on('click', function () {
+    foodItemSelectionHandler($(this).data('food-name'));
+  });
+
+  // Filter the food list when the user types in the food name input
+  $('#foodName').on('input', function () {
+    var filter = $('#foodName').val().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    $('.food-category-list .list-group-item').each(function () {
+      var foodName = $(this).data('food-name').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      $(this).toggleClass('d-none', !foodName.includes(filter));
+    });
+    $('.food-category-container').each(function () {
+      var hasVisibleItems = $(this).find('.list-group-item').filter(function () {
+        return $(this).hasClass('d-none') === false;
+      }).length > 0;
+      $(this).toggleClass('d-none', !hasVisibleItems);
+    });
+  });
+
+  // Search for the selected food name in the food list
+  // and return the data for the selected food item
+  function foodItemSelectionHandler(selectedFoodName) {
+    var data = {};
+    var selectedFoodButton = $('.food-category-list .list-group-item').filter(function () {
+      return $(this).data('food-name') === selectedFoodName;
+    });
+
+    if (allowCustom && selectedFoodButton.length === 0) {
+      data = {
+        food_name: selectedFoodName
+      };
+    } else if (selectedFoodButton.length === 0) {
+      return;
+    } else {
+      data = {
+        food_name: selectedFoodName,
+        food_id: selectedFoodButton.data('food-id'),
+        portion_grams: selectedFoodButton.data('portion-grams'),
+        energy_per_100g: selectedFoodButton.data('energy-per-100g'),
+        energy_per_portion: selectedFoodButton.data('energy-per-portion'),
+      };
+    }
+    $('#foodSelector').offcanvas('hide');
+    itemSelectedCallback(data);
+  }
+}

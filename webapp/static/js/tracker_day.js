@@ -1,7 +1,7 @@
 $(document).ready(function () {
   var workingForm;
 
-  initFoodSelectorOffcanvas();
+  FT.initFoodSelectorOffcanvas(fillFoodDetails, allowCustom = true);
   $('form.food-item').each((_, form) => initForm($(form)));
 
   function initForm(form) {
@@ -59,61 +59,16 @@ $(document).ready(function () {
     });
   }
 
-  function initFoodSelectorOffcanvas() {
-    // When the food selector offcanvas opens,
-    // focus the food name input and reset the food list
-    $('#foodSelector').on('shown.bs.offcanvas', function () {
-      $('#foodName').trigger('click');
-      $('#foodName').select();
-      $('.food-category-list .list-group-item').removeClass('d-none');
-      $('.food-category-container').removeClass('d-none');
-    });
+  function fillFoodDetails(selectedFoodData) {
+    workingForm.find('input[name="name"]').val(selectedFoodData.food_name).addClass('bg-warning');
 
-    // When user submits the food selector form,
-    // set the selected food name and close the offcanvas
-    $('#foodSelectorForm').on('submit', function (e) {
-      e.preventDefault();
-      fillFoodDetails($('#foodName').val());
-      $('#foodSelector').offcanvas('hide');
-    });
-
-    // When the user clicks on a food name in the food list,
-    // set the selected food name and close the offcanvas
-    $('.food-category-list .list-group-item').on('click', function () {
-      fillFoodDetails($(this).data('food-name'));
-      $('#foodSelector').offcanvas('hide');
-    });
-
-    // Filter the food list when the user types in the food name input
-    $('#foodName').on('input', function () {
-      var filter = $('#foodName').val().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      $('.food-category-list .list-group-item').each(function () {
-        var foodName = $(this).data('food-name').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        $(this).toggleClass('d-none', !foodName.includes(filter));
-      });
-      $('.food-category-container').each(function () {
-        var hasVisibleItems = $(this).find('.list-group-item').filter(function () {
-          return $(this).hasClass('d-none') === false;
-        }).length > 0;
-        $(this).toggleClass('d-none', !hasVisibleItems);
-      });
-    });
-
-    function fillFoodDetails(selectedFoodName) {
-      workingForm.find('.food-name-input').val(selectedFoodName).addClass('bg-warning');
-
-      var selectedFoodButton = $('.food-category-list .list-group-item').filter(function () {
-        return $(this).data('food-name') === selectedFoodName;
-      });
-
-      if (selectedFoodButton.length) {
-        workingForm.find('input[name="amount_grams"]').val(selectedFoodButton.data('portion-grams')).addClass('bg-warning');
-        workingForm.find('input[name="energy_per_100g"]').val(selectedFoodButton.data('energy-per-100g')).addClass('bg-warning');
-        workingForm.find('input[name="energy_total"]').val(selectedFoodButton.data('energy-per-portion')).addClass('bg-warning');
-      }
-      workingForm.addClass('changed');
-      updateMealForms(workingForm.closest('.meal-container'));
+    if (selectedFoodData.food_id) {
+      workingForm.find('input[name="amount_grams"]').val(selectedFoodData.portion_grams).addClass('bg-warning');
+      workingForm.find('input[name="energy_per_100g"]').val(selectedFoodData.energy_per_100g).addClass('bg-warning');
+      workingForm.find('input[name="energy_total"]').val(selectedFoodData.energy_per_portion).addClass('bg-warning');
     }
+    workingForm.addClass('changed');
+    updateMealForms(workingForm.closest('.meal-container'));
   }
 
   function updateMealForms(mealContainer) {
