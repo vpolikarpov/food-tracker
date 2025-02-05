@@ -172,15 +172,20 @@ FT.ensureSingleNewItemForm = function (container) {
  */
 FT.initFoodSelectorOffcanvas = function (itemSelectedCallback, allowCustom = true) {
   // When the food selector offcanvas opens,
-  // focus the food name input and reset the food list
-  $('#foodSelector').on('shown.bs.offcanvas', function () {
-    $('#foodName').trigger('click');
-    $('#foodName').select();
+  // reset the food list: show all in-stock items
+  $('#foodSelector').on('show.bs.offcanvas', function () {
     $('.food-category-list .list-group-item').each(function () {
       var isInStock = $(this).data('is-in-stock');
       $(this).toggleClass('d-none', isInStock === "False");
     });
     toggleCategories();
+  });
+
+  // When the food selector offcanvas is opened,
+  // focus the food name input
+  $('#foodSelector').on('shown.bs.offcanvas', function () {
+    $('#foodName').select();
+    $('#foodName').trigger('click');
   });
 
   // When user submits the food selector form,
