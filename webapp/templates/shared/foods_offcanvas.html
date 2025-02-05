@@ -22,11 +22,13 @@
       <h6 class="mt-3">{{ category.name }}</h6>
       <div class="list-group food-category-list">
         {% for food in category.food_items %}
+        {% set food_stock_records = stock_records|selectattr('food_item_id', 'eq', food.id)|list %}
         <button type="button" class="list-group-item list-group-item-action"
           data-food-id="{{ food.id }}" data-food-name="{{ food.name }}" data-portion-grams="{{ food.portion_grams }}"
-          data-energy-per-100g="{{ food.energy_per_100g }}" data-energy-per-portion="{{ food.energy_per_portion }}">
+          data-energy-per-100g="{{ food.energy_per_100g }}" data-energy-per-portion="{{ food.energy_per_portion }}"
+          data-is-in-stock="{{ food_stock_records|length > 0 }}" />
           {{ food.name }}
-          {% for stock_record in stock_records|selectattr('food_item_id', 'eq', food.id) %}
+          {% for stock_record in food_stock_records %}
             {% if stock_record.amount_note %}
             <span class="badge mx-1 bg-info text-dark">{{ stock_record.amount_note }}</span>
             {% endif %}

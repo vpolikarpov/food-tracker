@@ -176,8 +176,11 @@ FT.initFoodSelectorOffcanvas = function (itemSelectedCallback, allowCustom = tru
   $('#foodSelector').on('shown.bs.offcanvas', function () {
     $('#foodName').trigger('click');
     $('#foodName').select();
-    $('.food-category-list .list-group-item').removeClass('d-none');
-    $('.food-category-container').removeClass('d-none');
+    $('.food-category-list .list-group-item').each(function () {
+      var isInStock = $(this).data('is-in-stock');
+      $(this).toggleClass('d-none', isInStock === "False");
+    });
+    toggleCategories();
   });
 
   // When user submits the food selector form,
@@ -200,13 +203,17 @@ FT.initFoodSelectorOffcanvas = function (itemSelectedCallback, allowCustom = tru
       var foodName = $(this).data('food-name').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       $(this).toggleClass('d-none', !foodName.includes(filter));
     });
+    toggleCategories();
+  });
+
+  function toggleCategories() {
     $('.food-category-container').each(function () {
       var hasVisibleItems = $(this).find('.list-group-item').filter(function () {
         return $(this).hasClass('d-none') === false;
       }).length > 0;
       $(this).toggleClass('d-none', !hasVisibleItems);
     });
-  });
+  }
 
   // Search for the selected food name in the food list
   // and return the data for the selected food item
