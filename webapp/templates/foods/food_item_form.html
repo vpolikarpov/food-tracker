@@ -2,6 +2,7 @@
 {% set save_action = url_for('foods.add_food') if is_new else url_for('foods.edit_food', food_id=food_item.id) %}
 {% set delete_action = url_for('foods.delete_food', food_id=food_item.id) %}
 {% set form_class = 'food-item' ~ (' food-item-new' if is_new else '') %}
+{% set food_stock_records = stock_records|selectattr('food_item_id', 'eq', food_item.id)|list %}
 <form class="row g-1 mb-3 mb-lg-2 justify-content-end {{form_class}}" action="{{ save_action }}" method="post">
   <div class="col">
     <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
@@ -45,7 +46,7 @@
       <input type="submit" class="btn btn-sm btn-primary flex-grow-1 save-button" value="Save" title="Save" />
       <input type="reset" class="btn btn-sm btn-secondary flex-grow-1 reset-button" value="Reset" title="Reset" />
       <input type="submit" class="btn btn-sm btn-outline-danger flex-grow-1 delete-button"
-        formaction="{{ delete_action }}" formmethod="post" value="Delete" title="Delete" />
+        formaction="{{ delete_action }}" formmethod="post" value="Delete" title="Delete" {% if food_stock_records|length > 0 %}disabled{% endif %} />
       <div class="flex-grow-1 loading-indicator text-center">
         <div class="spinner-border spinner-border-sm text-primary" role="status">
           <span class="visually-hidden">Loading...</span>

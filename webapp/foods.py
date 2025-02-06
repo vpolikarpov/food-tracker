@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, redirect, url_for
-from webapp.models import FoodCategory, FoodItem
+from webapp.models import FoodCategory, FoodItem, FoodStockRecord
 from webapp.database import db
 
 bp = Blueprint('foods', __name__)
@@ -20,7 +20,15 @@ def list(category_id=None):
       db.select(FoodItem).order_by(FoodItem.name)).scalars().all()
     selected_category = None
 
-  return render_template('foods/foods_page.html', categories=categories, foods=foods, selected_category=selected_category)
+  stock_records = db.session.execute(
+    db.select(FoodStockRecord)).scalars().all()
+
+  return render_template(
+    'foods/foods_page.html',
+    categories=categories,
+    foods=foods,
+    stock_records=stock_records,
+    selected_category=selected_category)
 
 
 def redirect_based_on_origin(origin, category_id):
