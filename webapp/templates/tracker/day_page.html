@@ -14,7 +14,7 @@
 
 {% block content %}
 <header class="container gy-2 mb-3 d-flex gap-2 align-items-center justify-content-between" style="max-width: 800px;">
-  <h1 class="col-auto my-2 me-auto">{{ date.strftime('%d %b %Y') }}</h1>
+  <h1 class="col-auto my-2 me-auto">{{ date_str or date.strftime('%d %b %Y') }}</h1>
   {% if is_date_active %}
   <div class="col-auto">
     <form action="{{ url_for('tracker.remove_active_date') }}" method="post">

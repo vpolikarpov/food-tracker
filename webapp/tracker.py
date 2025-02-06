@@ -32,6 +32,14 @@ def day(date):
   active_days = db.session.execute(
     db.select(ActiveDay).order_by(ActiveDay.date)).scalars().all()
 
+  date_str = None
+  if parsed_date not in [day.date for day in active_days]:
+    date_str = 'Add day'
+  elif parsed_date == today:
+    date_str = 'Today'
+  elif parsed_date == today + timedelta(days=1):
+    date_str = 'Tomorrow'
+
   default_new_date = None
   if parsed_date not in [day.date for day in active_days]:
     # If the selected date is not an active day, set it as the default new date
@@ -53,6 +61,7 @@ def day(date):
   return render_template(
     'tracker/day_page.html',
     date=parsed_date,
+    date_str=date_str,
     active_days=active_days,
     default_new_date=default_new_date,
     meals=meals,
