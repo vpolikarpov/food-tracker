@@ -90,6 +90,12 @@ FT.sendFoodItemForm = function (form) {
     return;
   }
 
+  if (isDelete) {
+    if (!confirm('Are you sure you want to delete this item?')) {
+      return;
+    }
+  }
+
   form.removeClass('changed').addClass('loading');
 
   return fetch(action, {
