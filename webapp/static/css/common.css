@@ -1,0 +1,13 @@
+.navbar-nav.food-tracker-navbar>li>a.nav-link {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.navbar-nav.food-tracker-navbar>li>a.nav-link:focus,
+.navbar-nav.food-tracker-navbar>li>a.nav-link:hover {
+  color: rgb(255, 255, 255);
+}
+
+.navbar-nav.food-tracker-navbar>li>a.nav-link.active,
+.navbar-nav.food-tracker-navbar>li>a.nav-link.show {
+  color: rgb(255, 255, 255);
+}
