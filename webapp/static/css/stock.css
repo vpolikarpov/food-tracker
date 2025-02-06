@@ -1,3 +1,8 @@
+form.food-item {
+  justify-content: end;
+}
+
+form.food-item .add-button,
 form.food-item .save-button,
 form.food-item .reset-button {
   display: none;
@@ -5,6 +10,20 @@ form.food-item .reset-button {
 
 form.food-item .delete-button {
   display: inline-block;
+}
+
+form.food-item.food-item-new:not(.changed):not(.loading) .add-button,
+form.food-item.food-item-new.changed .save-button,
+form.food-item.food-item-new.changed .reset-button {
+  display: inline-block;
+}
+
+form.food-item.food-item-new:not(.changed):not(.loading) {
+  justify-content: start;
+}
+
+form.food-item.food-item-new:not(.changed):not(.loading)>div:not(.buttons-container) {
+  display: none;
 }
 
 form.food-item.food-item-new .delete-button {

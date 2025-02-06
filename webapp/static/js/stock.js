@@ -8,14 +8,14 @@ $(document).ready(function () {
     // Reset the form to remove all changes that browser may have saved
     form.trigger('reset');
 
-    // When the user clicks on the food name input,
+    // When the user clicks on the add button,
     // set the working form and open the food selector offcanvas
-    form.find('.food-name-input').on('click', function (event) {
+    form.find('input.add-button').on('click', function (event) {
       workingForm = $(this).closest('form');
       if (!workingForm.hasClass('food-item-new')) {
         return;
       }
-      $('#foodName').val($(this).val());
+      $('#foodName').val("");
       $('#foodSelector').offcanvas('show');
     });
 
@@ -43,9 +43,11 @@ $(document).ready(function () {
   }
 
   function fillFoodDetails(selectedFoodData) {
-    workingForm.find('input[name="food_name"]').val(selectedFoodData.food_name).addClass('bg-warning');
-    workingForm.find('input[name="food_item_id"]').val(selectedFoodData.food_id).addClass('bg-warning');
     workingForm.addClass('changed');
+    workingForm.find('span.food-name').text(selectedFoodData.food_name);
+    workingForm.find('input[name="food_item_id"]').val(selectedFoodData.food_id);
+    workingForm.find('input[name="amount_note"]').addClass('bg-warning').focus();
+    workingForm.find('input[name="date_note"]').addClass('bg-warning');
     updateCategoryForms(workingForm.closest('.category-container'));
   }
 
