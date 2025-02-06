@@ -169,15 +169,20 @@ FT.ensureSingleNewItemForm = function (container) {
  *
  * @param {function} itemSelectedCallback - The callback function to be called when a food item is selected.
  * @param {boolean} [allowCustom=true] - Whether to allow custom food names that are not in the list.
+ * @param {string} [defaultFilter=''] - The default filter to apply to the food list. Possible values are 'in-stock' or ''.
  */
-FT.initFoodSelectorOffcanvas = function (itemSelectedCallback, allowCustom = true) {
+FT.initFoodSelectorOffcanvas = function (itemSelectedCallback, allowCustom = true, defaultFilter = '') {
   // When the food selector offcanvas opens,
   // reset the food list: show all in-stock items
   $('#foodSelector').on('show.bs.offcanvas', function () {
-    $('.food-category-list .list-group-item').each(function () {
-      var isInStock = $(this).data('is-in-stock');
-      $(this).toggleClass('d-none', isInStock === "False");
-    });
+    if (defaultFilter === "in-stock") {
+      $('.food-category-list .list-group-item').each(function () {
+        var isInStock = $(this).data('is-in-stock');
+        $(this).toggleClass('d-none', isInStock === "False");
+      });
+    } else {
+      $('.food-category-list .list-group-item').removeClass('d-none');
+    }
     toggleCategories();
   });
 

@@ -1,7 +1,7 @@
 $(document).ready(function () {
   var workingForm;
 
-  FT.initFoodSelectorOffcanvas(fillFoodDetails, allowCustom = true);
+  FT.initFoodSelectorOffcanvas(fillFoodDetails, allowCustom = true, defaultFilter = 'in-stock');
   $('form.food-item').each((_, form) => initForm($(form)));
 
   function initForm(form) {
