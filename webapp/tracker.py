@@ -102,7 +102,7 @@ def set_active_date():
         new_meal.recalculate_total_energy(commit=False)
         db.session.add(new_meal)
 
-      db.session.commit()
+    db.session.commit()
 
   return redirect(url_for('tracker.day', date=selected_date.strftime('%Y-%m-%d')))
 
