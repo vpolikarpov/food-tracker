@@ -138,8 +138,10 @@ def day_template():
 def add_food_consumed():
   meal_id = uuid.UUID(request.form.get('meal_id'))
   meal = db.get_or_404(Meal, meal_id)
+  food_item_id_str = request.form.get('food_item_id')
   new_food = FoodConsumptionRecord(
     meal_id=meal_id,
+    food_item_id=uuid.UUID(food_item_id_str) if food_item_id_str else None,
     name=request.form.get('name'),
     amount_grams=nullable_int(request.form.get('amount_grams')),
     energy_per_100g=nullable_int(request.form.get('energy_per_100g')),
@@ -164,6 +166,10 @@ def add_food_consumed():
 def edit_food_consumed(food_id):
   food = db.get_or_404(FoodConsumptionRecord, food_id)
   meal = food.meal
+
+  food_item_id_str = request.form.get('food_item_id')
+  food.food_item_id = uuid.UUID(food_item_id_str) if food_item_id_str else None
+
   food.name = request.form.get('name')
   food.amount_grams = nullable_int(request.form.get('amount_grams'))
   food.energy_per_100g = nullable_int(request.form.get('energy_per_100g'))

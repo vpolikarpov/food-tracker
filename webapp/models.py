@@ -40,17 +40,32 @@ class FoodItem(db.Model):
   note: Mapped[str] = mapped_column(String(200))
 
   category: Mapped["FoodCategory"] = relationship(back_populates='food_items')
+  consumptions: Mapped[List['FoodConsumptionRecord']] = relationship(
+    back_populates='food_item')
   stock_records: Mapped[List['FoodStockRecord']] = relationship(
     back_populates='food_item')
 
   def __repr__(self):
     return f'<FoodItem - {self.name}>'
 
+  def to_dict(self):
+    return {
+      'id': str(self.id),
+      'name': self.name,
+      'category_id': self.category_id,
+      'portion_grams': self.portion_grams,
+      'energy_per_100g': self.energy_per_100g,
+      'energy_per_portion': self.energy_per_portion,
+      'note': self.note
+    }
+
 
 class FoodConsumptionRecord(db.Model):
   __tablename__ = 'food_consumption'
 
   id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+  food_item_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+    ForeignKey('food.id'), nullable=True)
   meal_id: Mapped[uuid.UUID] = mapped_column(
     ForeignKey('meal.id'), nullable=False)
   name: Mapped[str] = mapped_column(String(100))
@@ -58,11 +73,14 @@ class FoodConsumptionRecord(db.Model):
   energy_per_100g: Mapped[Optional[int]] = mapped_column()
   energy_total: Mapped[Optional[int]] = mapped_column()
 
+  food_item: Mapped[Optional["FoodItem"]] = relationship(
+    back_populates='consumptions')
   meal: Mapped["Meal"] = relationship(back_populates='food_items')
 
   def copy_to(self, meal):
     return FoodConsumptionRecord(
       meal=meal,
+      food_item=self.food_item,
       name=self.name,
       amount_grams=self.amount_grams,
       energy_per_100g=self.energy_per_100g,
@@ -90,6 +108,14 @@ class FoodStockRecord(db.Model):
 
   def __repr__(self):
     return f'<FoodStockRecord {self.date} - {self.food_item_id}>'
+
+  def to_dict(self):
+    return {
+      'id': str(self.id),
+      'food_item_id': str(self.food_item_id),
+      'amount_note': self.amount_note,
+      'date_note': self.date_note
+    }
 
 
 class Meal(db.Model):
