@@ -7,10 +7,17 @@ food_id=food_item.id) %}
 <form class="row g-1 mb-2 justify-content-end {{form_class}}" action="{{ save_action }}" method="post"
   data-form-id="{{ form_id }}">
   <div class="col">
+    <input type="hidden" name="food_item_id" value="{{ food_item.food_item.id if food_item.food_item or None }}" />
     <input type="hidden" name="meal_id" value="{{ meal.id }}" />
-    <input type="text" class="form-control form-control-sm food-name-input" name="name" title="Name"
-      value="{{ food_item.name }}" readonly data-bs-toggle="offcanvas" data-bs-target="#foodSelector"
-      autocomplete="off" />
+    <div class="input-group">
+      <input type="text" class="form-control form-control-sm food-name-input" name="name" title="Name"
+        value="{{ food_item.name }}" readonly data-bs-toggle="offcanvas" data-bs-target="#foodSelector"
+        autocomplete="off" />
+      <button
+        class="btn btn-outline-secondary btn-sm border-start-0 info-button{% if food_item is none or food_item.food_item is none %} d-none{% endif %}"
+        style="border-color: var(--bs-border-color);" type="button" title="Details" aria-controls="foodDetails"
+        aria-expanded="false">🛈</button>
+    </div>
   </div>
   <div class="col">
     <div class="row g-1">

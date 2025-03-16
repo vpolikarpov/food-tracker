@@ -30,6 +30,22 @@ def list(category_id=None):
     selected_category=selected_category)
 
 
+@bp.route('/stock/<uuid:food_id>')
+def get(food_id):
+  food = db.get_or_404(FoodItem, food_id)
+  stock_records = db.session.execute(
+    db.select(FoodStockRecord).where(FoodStockRecord.food_item_id == food_id)).scalars()
+
+  stock_records_dict = [record.to_dict() for record in stock_records]
+  for record in stock_records_dict:
+    record['edit_url'] = url_for('stock.edit', record_id=record['id'])
+    record['delete_url'] = url_for('stock.delete', record_id=record['id'])
+
+  if request.headers.get('X-Requested-With') == 'FetchAPI':
+    return stock_records_dict
+
+  return 'Bad request', 400
+
 def redirect_based_on_origin(origin, category_id):
   if origin == 'category':
     return redirect(url_for('stock.list', category_id=category_id))
