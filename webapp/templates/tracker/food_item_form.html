@@ -9,7 +9,7 @@ food_id=food_item.id) %}
   <div class="col">
     <input type="hidden" name="food_item_id" value="{{ food_item.food_item.id if food_item.food_item or None }}" />
     <input type="hidden" name="meal_id" value="{{ meal.id }}" />
-    <div class="input-group">
+    <div class="input-group food-name-input-group">
       <input type="text" class="form-control form-control-sm food-name-input" name="name" title="Name"
         value="{{ food_item.name }}" readonly data-bs-toggle="offcanvas" data-bs-target="#foodSelector"
         autocomplete="off" />

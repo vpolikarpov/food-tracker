@@ -1,3 +1,9 @@
+/* Fix border radius for input group with name and info button */
+form.food-item .input-group.food-name-input-group:not(:has(button:not(.d-none)))> :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
+  border-top-right-radius: var(--bs-border-radius-sm);
+  border-bottom-right-radius: var(--bs-border-radius-sm);
+}
+
 form.food-item .add-button,
 form.food-item .save-button,
 form.food-item .reset-button {
