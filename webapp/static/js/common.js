@@ -195,8 +195,8 @@ FT.initFoodSelectorOffcanvas = function (itemSelectedCallback, allowCustom = tru
   // When the food selector offcanvas is opened,
   // focus the food name input
   $('#foodSelector').on('shown.bs.offcanvas', function () {
+    $('#foodName').trigger('focus');
     $('#foodName').select();
-    $('#foodName').trigger('click');
   });
 
   // When user submits the food selector form,
