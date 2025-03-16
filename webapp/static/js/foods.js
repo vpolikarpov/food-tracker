@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-  $('form.food-item').each((_, form) => initForm($(form)));
+  $('form.food-data.food-item').each((_, form) => initForm($(form)));
 
   function initForm(form) {
     // Reset the form to remove all changes that browser may have saved

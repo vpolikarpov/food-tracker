@@ -3,7 +3,7 @@
 food_id=food_item.id) %}
 {% set delete_action = url_for('tracker.delete_food_consumed', food_id=food_item.id) %}
 {% set form_id = 'new-' ~ meal.id if is_new else food_item.id %}
-{% set form_class = 'food-item' ~ (' food-item-new' if is_new else '') %}
+{% set form_class = 'food-consumption food-item' ~ (' food-item-new' if is_new else '') %}
 <form class="row g-1 mb-2 justify-content-end {{form_class}}" action="{{ save_action }}" method="post"
   data-form-id="{{ form_id }}">
   <div class="col">
