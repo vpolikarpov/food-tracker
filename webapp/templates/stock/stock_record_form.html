@@ -5,7 +5,6 @@
 <form class="row gx-1 gy-0 mb-3 mb-sm-2 {{form_class}}" action="{{ save_action }}" method="post">
   <div class="col">
     <input type="hidden" name="origin" value="{{ 'category' if selected_category else 'all' }}" />
-    <input type="hidden" name="category_id" value="{{ category.id }}" />
     <input type="hidden" name="food_item_id" value="{{ stock_record.food_item_id }}" />
     <span class="d-block d-sm-none small text-nowrap food-name">{{ stock_record.food_item.name if stock_record.food_item else '' }}</span>
     <span class="d-none d-sm-block form-control form-control-sm text-nowrap food-name">{{ stock_record.food_item.name if stock_record.food_item else '' }}</span>
