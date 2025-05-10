@@ -70,16 +70,16 @@ $(document).ready(function () {
   }
 
   function fillFoodDetails(selectedFoodData) {
-    workingForm.find('input[name="name"]').val(selectedFoodData.food_name).addClass('bg-warning');
+    workingForm.find('input[name="name"]').val(selectedFoodData.food_name).attr('value', selectedFoodData.food_name).addClass('bg-warning');
 
     if (selectedFoodData.food_id) {
-      workingForm.find('input[name="food_item_id"]').val(selectedFoodData.food_id);
-      workingForm.find('input[name="amount_grams"]').val(selectedFoodData.portion_grams).addClass('bg-warning');
-      workingForm.find('input[name="energy_per_100g"]').val(selectedFoodData.energy_per_100g).addClass('bg-warning');
-      workingForm.find('input[name="energy_total"]').val(selectedFoodData.energy_per_portion).addClass('bg-warning');
+      workingForm.find('input[name="food_item_id"]').val(selectedFoodData.food_id).attr('value', selectedFoodData.food_id);
+      workingForm.find('input[name="amount_grams"]').val(selectedFoodData.portion_grams).attr('value', selectedFoodData.portion_grams).addClass('bg-warning');
+      workingForm.find('input[name="energy_per_100g"]').val(selectedFoodData.energy_per_100g).attr('value', selectedFoodData.energy_per_100g).addClass('bg-warning');
+      workingForm.find('input[name="energy_total"]').val(selectedFoodData.energy_per_portion).attr('value', selectedFoodData.energy_per_portion).addClass('bg-warning');
       workingForm.find('.info-button').removeClass('d-none');
     } else {
-      workingForm.find('input[name="food_item_id"]').val('');
+      workingForm.find('input[name="food_item_id"]').val('').attr('value', '');
       workingForm.find('.info-button').addClass('d-none');
     }
     workingForm.addClass('changed');
