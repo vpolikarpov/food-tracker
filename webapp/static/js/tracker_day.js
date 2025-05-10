@@ -78,6 +78,9 @@ $(document).ready(function () {
       workingForm.find('input[name="energy_per_100g"]').val(selectedFoodData.energy_per_100g).addClass('bg-warning');
       workingForm.find('input[name="energy_total"]').val(selectedFoodData.energy_per_portion).addClass('bg-warning');
       workingForm.find('.info-button').removeClass('d-none');
+    } else {
+      workingForm.find('input[name="food_item_id"]').val('');
+      workingForm.find('.info-button').addClass('d-none');
     }
     workingForm.addClass('changed');
     updateMealForms(workingForm.closest('.meal-container'));
