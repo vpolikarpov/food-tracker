@@ -146,9 +146,6 @@ $(document).ready(function () {
       if (form.data('initialized')) return;
       form.data('initialized', true);
 
-      // Set the food item ID for the form
-      form.find('input[name="food_item_id"]').attr('value', foodItemId);
-
       // Reset the form to remove all changes that browser may have saved
       form.trigger('reset');
 
@@ -222,6 +219,9 @@ $(document).ready(function () {
       stockContainer.find('.food-item').each((_, form) => initStockRecordForm($(form)));
 
       updateStockRecordForms(stockContainer);
+
+      // Set the food item ID for all the forms
+      stockContainer.find('input[name="food_item_id"]').attr('value', foodItemId);
     }
 
     function updateStockRecordForms(stockContainer) {
